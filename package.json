@@ -1,0 +1,53 @@
+{
+  "name": "switchboard",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Universal SDK for chat platforms - build bots once, deploy everywhere",
+  "keywords": [
+    "chat",
+    "bot",
+    "discord",
+    "slack",
+    "teams",
+    "google-chat",
+    "sdk"
+  ],
+  "homepage": "https://github.com/Aarekaz/switchboard#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aarekaz/switchboard.git"
+  },
+  "license": "MIT",
+  "author": "Aarekaz",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --parallel dev",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\"",
+    "typecheck": "pnpm -r typecheck",
+    "clean": "pnpm -r clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "@vitest/ui": "^1.2.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.4",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  },
+  "packageManager": "pnpm@8.15.1",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

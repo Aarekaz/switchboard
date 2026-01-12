@@ -1,0 +1,50 @@
+{
+  "name": "@switchboard/discord",
+  "version": "0.0.1",
+  "description": "Discord adapter for Switchboard SDK",
+  "keywords": [
+    "switchboard",
+    "discord",
+    "bot",
+    "adapter"
+  ],
+  "homepage": "https://github.com/Aarekaz/switchboard#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aarekaz/switchboard.git",
+    "directory": "packages/discord"
+  },
+  "license": "MIT",
+  "author": "Aarekaz",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@switchboard/core": "workspace:*",
+    "discord.js": "^14.14.1"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

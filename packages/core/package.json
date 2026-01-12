@@ -1,0 +1,47 @@
+{
+  "name": "@switchboard/core",
+  "version": "0.0.1",
+  "description": "Core types and client API for Switchboard - universal chat platform SDK",
+  "keywords": [
+    "switchboard",
+    "chat",
+    "bot",
+    "sdk",
+    "core"
+  ],
+  "homepage": "https://github.com/Aarekaz/switchboard#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aarekaz/switchboard.git",
+    "directory": "packages/core"
+  },
+  "license": "MIT",
+  "author": "Aarekaz",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

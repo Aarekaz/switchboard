@@ -1,0 +1,17 @@
+{
+  "name": "hello-world-example",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx discord.ts"
+  },
+  "dependencies": {
+    "@switchboard/core": "workspace:*",
+    "@switchboard/discord": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}
