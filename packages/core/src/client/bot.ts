@@ -18,7 +18,8 @@ export class Bot {
 
   constructor(
     private readonly adapter: PlatformAdapter,
-    private readonly _platform: PlatformType
+    private readonly _platform: PlatformType,
+    private readonly credentials: unknown
   ) {
     // Subscribe to all events from the adapter
     this.adapter.onEvent(async (event) => {
@@ -37,10 +38,9 @@ export class Bot {
    * Start the bot (connect to the platform)
    */
   async start(): Promise<void> {
-    // Connection is handled during construction via connect()
-    // This method is kept for API consistency and future lifecycle management
+    // Connect to the platform if not already connected
     if (!this.adapter.isConnected()) {
-      throw new Error('Bot is not connected. This should not happen.');
+      await this.adapter.connect(this.credentials);
     }
   }
 

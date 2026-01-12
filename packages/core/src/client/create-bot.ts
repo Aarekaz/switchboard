@@ -69,7 +69,7 @@ export interface BotConfig {
  * await bot.start();
  * ```
  */
-export async function createBot(config: BotConfig): Promise<Bot> {
+export function createBot(config: BotConfig): Bot {
   let adapter: PlatformAdapter;
 
   // Use custom adapter if provided
@@ -84,13 +84,7 @@ export async function createBot(config: BotConfig): Promise<Bot> {
     adapter = registeredAdapter;
   }
 
-  // Connect to the platform
-  try {
-    await adapter.connect(config.credentials || {});
-  } catch (error) {
-    throw new ConnectionError(config.platform, error);
-  }
-
   // Create and return the bot instance
-  return new Bot(adapter, config.platform);
+  // Connection happens lazily when bot.start() is called
+  return new Bot(adapter, config.platform, config.credentials || {});
 }

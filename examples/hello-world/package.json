@@ -1,6 +1,6 @@
 {
   "name": "hello-world-example",
-  "version": "0.0.1",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "@switchboard/core": "workspace:*",
-    "@switchboard/discord": "workspace:*"
+    "@switchboard/discord": "workspace:*",
+    "dotenv": "^17.2.3"
   },
   "devDependencies": {
     "tsx": "^4.7.0",

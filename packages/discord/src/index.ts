@@ -5,7 +5,13 @@
  * Auto-registers when imported
  */
 
-// Implementation coming in Phase 2
-// For now, this is a placeholder
+// Auto-registration side effect
+import './register.js';
 
-export {};
+// Exports
+export { DiscordAdapter } from './adapter.js';
+export type {
+  DiscordCredentials,
+  DiscordConfig,
+  DiscordMessageOptions,
+} from './types.js';

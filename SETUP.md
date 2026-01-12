@@ -132,16 +132,51 @@ switchboard/
 └── SETUP.md               # This file
 ```
 
+## Running the Discord Bot Example
+
+**Phase 2 is complete!** You can now run a real Discord bot.
+
+### 1. Get a Discord Bot Token
+
+1. Go to [Discord Developer Portal](https://discord.com/developers/applications)
+2. Create a new application
+3. Go to "Bot" → "Add Bot"
+4. Copy the token
+5. Enable "Message Content Intent" under "Privileged Gateway Intents"
+
+### 2. Invite Your Bot to a Server
+
+1. Go to "OAuth2" → "URL Generator"
+2. Select scopes: `bot`
+3. Select permissions: `Send Messages`, `Read Message History`, `Add Reactions`
+4. Copy the generated URL and open it in your browser
+5. Select a server and authorize
+
+### 3. Run the Example
+
+```bash
+cd examples/hello-world
+cp .env.example .env
+# Edit .env and add your Discord token
+pnpm dev
+```
+
+### 4. Test It!
+
+Send a message containing "ping" or "hello" in any channel where the bot is present!
+
+The bot will respond with:
+- "pong! 🏓" for messages containing "ping"
+- "Hello, @YourName! 👋" for messages containing "hello"
+
 ## What's Next?
 
-We're now ready to move to **Phase 2: Discord Adapter Implementation**.
+**Phase 3: Slack Adapter** - Prove the "One Line Swap" works!
 
-Phase 2 will involve:
-1. Installing discord.js
-2. Implementing the DiscordAdapter class
-3. Creating normalizers for Discord messages/events
-4. Testing with a real Discord bot
-5. Proving the "One Line Swap" concept
+Phase 3 will involve:
+1. Implementing the Slack adapter
+2. Testing that the same bot code works on both Discord and Slack
+3. Validating our abstractions (this is where we'll discover if our design is good!)
 
 See `spec.md` for the detailed implementation plan.
 
