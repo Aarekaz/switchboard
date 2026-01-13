@@ -57,7 +57,12 @@ jobs:
 
       - name: Update package versions
         run: |
-          pnpm version ${{ steps.version.outputs.VERSION }} --no-git-tag-version -r
+          CURRENT=$(node -p "require('./package.json').version")
+          if [ "$CURRENT" != "${{ steps.version.outputs.VERSION }}" ]; then
+            pnpm version ${{ steps.version.outputs.VERSION }} --no-git-tag-version -r
+          else
+            echo "Version already set"
+          fi
 
       - name: Publish to npm
         run: pnpm publish -r --access public --no-git-checks
@@ -74,6 +79,7 @@ jobs:
           fi
 
           # Generate changelog between tags
+          echo "PREVIOUS_TAG=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
           echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
           git log ${PREVIOUS_TAG}..HEAD --pretty=format:"* %s (%h)" --no-merges >> $GITHUB_OUTPUT
           echo "" >> $GITHUB_OUTPUT
@@ -100,7 +106,7 @@ jobs:
             - [Contributing Guide](https://github.com/Aarekaz/switchboard/blob/main/CONTRIBUTING.md)
             - [Examples](https://github.com/Aarekaz/switchboard/tree/main/examples)
 
-            Full Changelog: https://github.com/Aarekaz/switchboard/compare/${PREVIOUS_TAG}...v${{ steps.version.outputs.VERSION }}
+            Full Changelog: https://github.com/Aarekaz/switchboard/compare/${{ steps.changelog.outputs.PREVIOUS_TAG }}...v${{ steps.version.outputs.VERSION }}
           draft: false
           prerelease: false
         env:
