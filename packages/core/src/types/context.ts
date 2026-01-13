@@ -7,7 +7,7 @@
  * Inspired by Hono's context pattern and Telegraf's bot framework.
  */
 
-import type { UnifiedMessage, MessageRef } from './message.js';
+import type { UnifiedMessage } from './message.js';
 import type { SendMessageOptions } from './message.js';
 import type { Result } from './result.js';
 import type { PlatformType } from './platform.js';

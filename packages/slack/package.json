@@ -22,14 +22,14 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@slack/bolt": "^3.17.0",
     "@aarekaz/switchboard-core": "workspace:*",
-    "lru-cache": "^10.2.0"
+    "@slack/bolt": "^4.6.0",
+    "lru-cache": "^11.2.4"
   },
   "devDependencies": {
-    "@types/node": "^20.11.17",
-    "tsup": "^8.0.1",
-    "typescript": "^5.3.3"
+    "@types/node": "^25.0.8",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
   },
   "keywords": [
     "switchboard",

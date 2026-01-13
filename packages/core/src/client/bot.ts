@@ -7,7 +7,7 @@ import type {
   SendMessageOptions,
   UploadOptions,
 } from '../types/message.js';
-import type { UnifiedEvent, MessageEvent, ReactionEvent } from '../types/event.js';
+import type { UnifiedEvent, ReactionEvent } from '../types/event.js';
 import type { Channel } from '../types/channel.js';
 import type { User } from '../types/user.js';
 import type { MessageContext, MessageHandler } from '../types/context.js';

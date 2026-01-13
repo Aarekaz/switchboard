@@ -12,4 +12,9 @@ export default defineConfig({
   clean: true,
   target: 'es2022',
   tsconfig: 'tsconfig.build.json',
+  external: [
+    '@aarekaz/switchboard-core',
+    '@aarekaz/switchboard-discord',
+    '@aarekaz/switchboard-slack',
+  ],
 });

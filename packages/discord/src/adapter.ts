@@ -8,7 +8,6 @@ import {
   GatewayIntentBits,
   Message,
   TextChannel,
-  ThreadChannel,
   Partials,
 } from 'discord.js';
 import type {
@@ -484,8 +483,8 @@ export class DiscordAdapter implements PlatformAdapter {
    */
   async uploadFile(
     channelId: string,
-    file: unknown,
-    options?: unknown
+    _file: unknown,
+    _options?: unknown
   ): Promise<Result<UnifiedMessage>> {
     if (!this.client) {
       return err(new ConnectionError('discord', new Error('Not connected')));

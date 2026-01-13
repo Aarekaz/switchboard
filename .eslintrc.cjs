@@ -19,6 +19,7 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
   },
+  ignorePatterns: ['dist/', 'packages/**/dist/', 'examples/**/dist/'],
   env: {
     node: true,
     es2022: true,

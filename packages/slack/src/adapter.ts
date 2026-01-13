@@ -583,8 +583,8 @@ export class SlackAdapter implements PlatformAdapter {
    */
   async uploadFile(
     channelId: string,
-    file: unknown,
-    options?: UploadOptions
+    _file: unknown,
+    _options?: UploadOptions
   ): Promise<Result<UnifiedMessage>> {
     if (!this.app) {
       return err(new ConnectionError('slack', new Error('Not connected')));

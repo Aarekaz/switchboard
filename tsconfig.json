@@ -9,6 +9,12 @@
     // Modules
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "baseUrl": ".",
+    "paths": {
+      "@aarekaz/switchboard-core": ["packages/core/src/index.ts"],
+      "@aarekaz/switchboard-discord": ["packages/discord/src/index.ts"],
+      "@aarekaz/switchboard-slack": ["packages/slack/src/index.ts"]
+    },
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
 

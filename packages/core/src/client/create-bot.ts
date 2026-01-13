@@ -2,7 +2,7 @@ import { Bot } from './bot.js';
 import { registry } from '../adapter/registry.js';
 import type { PlatformAdapter } from '../adapter/interface.js';
 import type { PlatformType } from '../types/platform.js';
-import { AdapterNotFoundError, ConnectionError } from '../utils/errors.js';
+import { AdapterNotFoundError } from '../utils/errors.js';
 
 /**
  * Configuration for creating a bot

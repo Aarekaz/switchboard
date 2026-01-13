@@ -7,7 +7,6 @@ import type {
   Attachment,
   Channel,
   User,
-  UnifiedEvent,
   MessageEvent,
   ReactionEvent,
 } from '@aarekaz/switchboard-core';
@@ -26,7 +25,7 @@ import type {
  */
 export function normalizeMessage(message: Message): UnifiedMessage {
   // Get plain text content
-  let text = message.content;
+  const text = message.content;
 
   // Extract attachments
   const attachments: Attachment[] = Array.from(message.attachments.values()).map(
