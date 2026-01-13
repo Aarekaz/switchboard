@@ -1,13 +1,13 @@
-# @switchboard/discord
+# @aarekaz/switchboard-discord
 
 Discord adapter for Switchboard SDK.
 
 ## Installation
 
 ```bash
-npm install @switchboard/core @switchboard/discord
+npm install @aarekaz/switchboard-core @aarekaz/switchboard-discord
 # or
-pnpm add @switchboard/core @switchboard/discord
+pnpm add @aarekaz/switchboard-core @aarekaz/switchboard-discord
 ```
 
 ## Usage
@@ -15,8 +15,8 @@ pnpm add @switchboard/core @switchboard/discord
 Simply import the Discord adapter and it will auto-register with Switchboard core:
 
 ```typescript
-import { createBot } from '@switchboard/core';
-import '@switchboard/discord'; // Auto-registers Discord adapter
+import { createBot } from '@aarekaz/switchboard-core';
+import '@aarekaz/switchboard-discord'; // Auto-registers Discord adapter
 
 const bot = createBot({
   platform: 'discord',

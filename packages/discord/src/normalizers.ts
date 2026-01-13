@@ -10,7 +10,7 @@ import type {
   UnifiedEvent,
   MessageEvent,
   ReactionEvent,
-} from '@switchboard/core';
+} from '@aarekaz/switchboard-core';
 import type {
   Message,
   TextChannel,

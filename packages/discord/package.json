@@ -1,6 +1,6 @@
 {
   "name": "@aarekaz/switchboard-discord",
-  "version": "0.2.1",
+  "version": "0.3.1",
   "description": "Discord adapter for Switchboard SDK",
   "keywords": [
     "switchboard",
@@ -37,7 +37,7 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@switchboard/core": "workspace:*",
+    "@aarekaz/switchboard-core": "workspace:*",
     "discord.js": "^14.14.1"
   },
   "devDependencies": {

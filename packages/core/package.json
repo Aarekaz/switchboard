@@ -1,6 +1,6 @@
 {
   "name": "@aarekaz/switchboard-core",
-  "version": "0.2.1",
+  "version": "0.3.1",
   "description": "Core types and client API for Switchboard - universal chat platform SDK",
   "keywords": [
     "switchboard",

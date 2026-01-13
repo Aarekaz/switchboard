@@ -1,15 +1,15 @@
 {
   "name": "hello-world-example",
-  "version": "0.2.1",
+  "version": "0.3.1",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "tsx discord.ts"
   },
   "dependencies": {
-    "@switchboard/core": "workspace:*",
-    "@switchboard/discord": "workspace:*",
-    "@switchboard/slack": "workspace:*",
+    "@aarekaz/switchboard-core": "workspace:*",
+    "@aarekaz/switchboard-discord": "workspace:*",
+    "@aarekaz/switchboard-slack": "workspace:*",
     "dotenv": "^17.2.3"
   },
   "devDependencies": {

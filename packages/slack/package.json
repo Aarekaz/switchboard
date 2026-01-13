@@ -1,6 +1,6 @@
 {
   "name": "@aarekaz/switchboard-slack",
-  "version": "0.2.1",
+  "version": "0.3.1",
   "description": "Slack adapter for Switchboard SDK",
   "type": "module",
   "main": "./dist/index.js",
@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@slack/bolt": "^3.17.0",
-    "@switchboard/core": "workspace:*",
+    "@aarekaz/switchboard-core": "workspace:*",
     "lru-cache": "^10.2.0"
   },
   "devDependencies": {

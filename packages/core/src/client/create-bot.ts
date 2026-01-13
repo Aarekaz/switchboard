@@ -50,8 +50,8 @@ export interface BotConfig {
  *
  * @example
  * ```typescript
- * import { createBot } from '@switchboard/core';
- * import '@switchboard/discord';
+ * import { createBot } from '@aarekaz/switchboard-core';
+ * import '@aarekaz/switchboard-discord';
  *
  * const bot = createBot({
  *   platform: 'discord',

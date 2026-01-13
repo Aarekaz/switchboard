@@ -1,4 +1,4 @@
-# @switchboard/slack
+# @aarekaz/switchboard-slack
 
 Slack adapter for [Switchboard SDK](https://github.com/yourusername/switchboard).
 
@@ -7,14 +7,14 @@ Build chat bots once, deploy everywhere. This adapter enables your Switchboard b
 ## Installation
 
 ```bash
-pnpm add @switchboard/slack
+pnpm add @aarekaz/switchboard-slack
 ```
 
 ## Quick Start
 
 ```typescript
-import { createBot } from '@switchboard/core';
-import '@switchboard/slack';
+import { createBot } from '@aarekaz/switchboard-core';
+import '@aarekaz/switchboard-slack';
 
 const bot = createBot({
   platform: 'slack',
@@ -272,7 +272,7 @@ Slack uses `mrkdwn` (their own Markdown variant), not standard Markdown. The ada
 ### Cache Settings
 
 ```typescript
-import { SlackAdapter } from '@switchboard/slack';
+import { SlackAdapter } from '@aarekaz/switchboard-slack';
 
 const adapter = new SlackAdapter({
   cacheSize: 5000,              // Store more messages
@@ -317,7 +317,7 @@ See the [examples directory](../../examples) for complete examples:
 
 ## API Reference
 
-See [@switchboard/core](../core/README.md) for the full API reference. The Slack adapter implements the complete `PlatformAdapter` interface.
+See [@aarekaz/switchboard-core](../core/README.md) for the full API reference. The Slack adapter implements the complete `PlatformAdapter` interface.
 
 ## License
 

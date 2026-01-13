@@ -66,13 +66,13 @@ git push origin v0.3.0
 
 ```bash
 # Check npm
-npm view @switchboard/core version
-npm view @switchboard/discord version
-npm view @switchboard/slack version
+npm view @aarekaz/switchboard-core version
+npm view @aarekaz/switchboard-discord version
+npm view @aarekaz/switchboard-slack version
 
 # Test installation
 mkdir test-install && cd test-install
-pnpm add @switchboard/core @switchboard/discord
+pnpm add @aarekaz/switchboard-core @aarekaz/switchboard-discord
 ```
 
 ### Step 6: Announce
@@ -144,7 +144,7 @@ Before creating a release, ensure:
 **Cause**: Version already published to npm
 
 **Solution**:
-1. Check existing version: `npm view @switchboard/core versions`
+1. Check existing version: `npm view @aarekaz/switchboard-core versions`
 2. Bump to next version
 3. Delete and recreate git tag if needed:
    ```bash
@@ -210,7 +210,7 @@ pnpm publish -r --tag beta --access public
 
 Install beta:
 ```bash
-pnpm add @switchboard/core@beta
+pnpm add @aarekaz/switchboard-core@beta
 ```
 
 ## Post-Release

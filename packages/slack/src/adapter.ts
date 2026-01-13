@@ -17,7 +17,7 @@ import type {
   User,
   SendMessageOptions,
   UploadOptions,
-} from '@switchboard/core';
+} from '@aarekaz/switchboard-core';
 import {
   ok,
   err,
@@ -26,7 +26,7 @@ import {
   MessageEditError,
   MessageDeleteError,
   ReactionError,
-} from '@switchboard/core';
+} from '@aarekaz/switchboard-core';
 import {
   normalizeMessage,
   normalizeMessageEvent,

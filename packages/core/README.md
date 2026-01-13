@@ -1,20 +1,20 @@
-# @switchboard/core
+# @aarekaz/switchboard-core
 
 Core types, interfaces, and client API for Switchboard - the universal chat platform SDK.
 
 ## Installation
 
 ```bash
-npm install @switchboard/core
+npm install @aarekaz/switchboard-core
 # or
-pnpm add @switchboard/core
+pnpm add @aarekaz/switchboard-core
 ```
 
 ## Usage
 
 ```typescript
-import { createBot } from '@switchboard/core';
-import '@switchboard/discord'; // Auto-registers Discord adapter
+import { createBot } from '@aarekaz/switchboard-core';
+import '@aarekaz/switchboard-discord'; // Auto-registers Discord adapter
 
 const bot = createBot({
   platform: 'discord',

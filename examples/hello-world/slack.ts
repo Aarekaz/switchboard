@@ -1,6 +1,6 @@
 import 'dotenv/config';
-import { createBot } from '@switchboard/core';
-import '@switchboard/slack';
+import { createBot } from '@aarekaz/switchboard-core';
+import '@aarekaz/switchboard-slack';
 
 async function main() {
   if (!process.env.SLACK_BOT_TOKEN || !process.env.SLACK_APP_TOKEN) {

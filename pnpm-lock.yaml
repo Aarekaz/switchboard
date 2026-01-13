@@ -41,13 +41,13 @@ importers:
 
   examples/hello-world:
     dependencies:
-      '@switchboard/core':
+      '@aarekaz/switchboard-core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@switchboard/discord':
+      '@aarekaz/switchboard-discord':
         specifier: workspace:*
         version: link:../../packages/discord
-      '@switchboard/slack':
+      '@aarekaz/switchboard-slack':
         specifier: workspace:*
         version: link:../../packages/slack
       dotenv:
@@ -72,7 +72,7 @@ importers:
 
   packages/discord:
     dependencies:
-      '@switchboard/core':
+      '@aarekaz/switchboard-core':
         specifier: workspace:*
         version: link:../core
       discord.js:
@@ -91,7 +91,7 @@ importers:
       '@slack/bolt':
         specifier: ^3.17.0
         version: 3.22.0
-      '@switchboard/core':
+      '@aarekaz/switchboard-core':
         specifier: workspace:*
         version: link:../core
       lru-cache:

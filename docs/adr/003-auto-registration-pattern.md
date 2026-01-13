@@ -19,7 +19,7 @@ Platform adapters need to be registered with the global registry before they can
 
 ```typescript
 // Goal: This should "just work"
-import '@switchboard/discord';
+import '@aarekaz/switchboard-discord';
 const bot = createBot({ platform: 'discord', credentials: {...} });
 ```
 
@@ -40,7 +40,7 @@ Use **side-effect imports** with auto-registration:
 
 **packages/discord/src/register.ts**:
 ```typescript
-import { registry } from '@switchboard/core';
+import { registry } from '@aarekaz/switchboard-core';
 import { DiscordAdapter } from './adapter.js';
 
 // Create and register the adapter
@@ -66,7 +66,7 @@ export * from './types.js';
 **User code**:
 ```typescript
 // This import triggers registration as a side effect
-import '@switchboard/discord';
+import '@aarekaz/switchboard-discord';
 
 // Adapter is now available
 const bot = createBot({ platform: 'discord', credentials: {...} });
@@ -100,7 +100,7 @@ export const registry = new AdapterRegistry();
 
 - **Zero config**: Users just import and go
 - **Pit of success**: Correct usage is automatic
-- **Clear intent**: `import '@switchboard/discord'` makes dependencies explicit
+- **Clear intent**: `import '@aarekaz/switchboard-discord'` makes dependencies explicit
 - **Tree-shakeable**: Unused adapters are removed in production builds
 - **Debuggable**: Registration logs help troubleshoot issues
 
@@ -121,8 +121,8 @@ export const registry = new AdapterRegistry();
 ### Alternative 1: Explicit Registration
 
 ```typescript
-import { registry } from '@switchboard/core';
-import { DiscordAdapter } from '@switchboard/discord';
+import { registry } from '@aarekaz/switchboard-core';
+import { DiscordAdapter } from '@aarekaz/switchboard-discord';
 
 registry.register('discord', new DiscordAdapter());
 
@@ -146,7 +146,7 @@ const bot = createBot({ platform: 'discord', credentials: {...} });
 ### Alternative 2: Factory Functions
 
 ```typescript
-import { createDiscordBot } from '@switchboard/discord';
+import { createDiscordBot } from '@aarekaz/switchboard-discord';
 
 const bot = createDiscordBot({ credentials: {...} });
 ```
@@ -193,7 +193,7 @@ export default {
 ```json
 {
   "dependencies": {
-    "@switchboard/discord": "*"
+    "@aarekaz/switchboard-discord": "*"
   }
 }
 ```
@@ -226,8 +226,8 @@ This pattern is used by successful libraries:
 Power users can bypass auto-registration:
 
 ```typescript
-import { registry } from '@switchboard/core';
-import { DiscordAdapter } from '@switchboard/discord/adapter'; // Note: /adapter
+import { registry } from '@aarekaz/switchboard-core';
+import { DiscordAdapter } from '@aarekaz/switchboard-discord/adapter'; // Note: /adapter
 
 // Custom adapter configuration
 const customAdapter = new DiscordAdapter({
@@ -244,7 +244,7 @@ const bot = createBot({ platform: 'discord', credentials: {...} });
 Tests need to manage global state:
 
 ```typescript
-import { registry } from '@switchboard/core';
+import { registry } from '@aarekaz/switchboard-core';
 
 beforeEach(() => {
   // Clear registry before each test
@@ -253,7 +253,7 @@ beforeEach(() => {
 
 test('bot creation', () => {
   // Import adapter (registers it)
-  await import('@switchboard/discord');
+  await import('@aarekaz/switchboard-discord');
 
   // Now create bot
   const bot = createBot({ platform: 'discord', credentials: {...} });
@@ -274,7 +274,7 @@ Example documentation:
 
 ```typescript
 // 1. Import the adapter (registers it automatically)
-import '@switchboard/discord';
+import '@aarekaz/switchboard-discord';
 
 // 2. Create your bot
 const bot = createBot({

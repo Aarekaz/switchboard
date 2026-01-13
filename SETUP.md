@@ -7,8 +7,8 @@ This guide contains the commands you need to run to complete the setup of the Sw
 The following has been set up:
 - ✅ Monorepo structure with pnpm workspaces
 - ✅ Root configuration (TypeScript, ESLint, Prettier, Vitest)
-- ✅ `@switchboard/core` package with all core types and client API
-- ✅ `@switchboard/discord` package stub (for Phase 2)
+- ✅ `@aarekaz/switchboard-core` package with all core types and client API
+- ✅ `@aarekaz/switchboard-discord` package stub (for Phase 2)
 - ✅ Example project structure
 - ✅ Test infrastructure
 
@@ -40,8 +40,8 @@ pnpm build
 ```
 
 This will build:
-- `@switchboard/core` (types and client API)
-- `@switchboard/discord` (stub for now)
+- `@aarekaz/switchboard-core` (types and client API)
+- `@aarekaz/switchboard-discord` (stub for now)
 
 ### 3. Run Tests
 
@@ -118,8 +118,8 @@ pnpm dev
 ```
 switchboard/
 ├── packages/
-│   ├── core/              # @switchboard/core - Core types & API
-│   └── discord/           # @switchboard/discord - Discord adapter (stub)
+│   ├── core/              # @aarekaz/switchboard-core - Core types & API
+│   └── discord/           # @aarekaz/switchboard-discord - Discord adapter (stub)
 ├── examples/
 │   └── hello-world/       # Example bot
 ├── package.json           # Root package.json

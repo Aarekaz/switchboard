@@ -3,7 +3,7 @@
  * This file registers the Slack adapter with the global registry when imported
  */
 
-import { registry } from '@switchboard/core';
+import { registry } from '@aarekaz/switchboard-core';
 import { SlackAdapter } from './adapter.js';
 
 // Create and register the adapter

@@ -7,5 +7,5 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  external: ['@slack/bolt', '@switchboard/core'],
+  external: ['@slack/bolt', '@aarekaz/switchboard-core'],
 });

@@ -1,5 +1,5 @@
 /**
- * @switchboard/discord
+ * @aarekaz/switchboard-discord
  *
  * Discord adapter for Switchboard SDK
  * Auto-registers when imported

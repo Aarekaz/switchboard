@@ -24,7 +24,7 @@ export class SwitchboardError extends Error {
 export class AdapterNotFoundError extends SwitchboardError {
   constructor(platform: PlatformType) {
     super(
-      `No adapter found for platform: ${platform}. Did you import @switchboard/${platform}?`,
+      `No adapter found for platform: ${platform}. Did you import @aarekaz/switchboard-${platform}?`,
       'ADAPTER_NOT_FOUND',
       platform
     );

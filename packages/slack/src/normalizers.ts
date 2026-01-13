@@ -2,7 +2,7 @@
  * Normalizers for converting Slack types to Switchboard unified types
  */
 
-import type { UnifiedMessage, UnifiedEvent, Attachment } from '@switchboard/core';
+import type { UnifiedMessage, UnifiedEvent, Attachment } from '@aarekaz/switchboard-core';
 
 /**
  * Normalize a Slack message to UnifiedMessage

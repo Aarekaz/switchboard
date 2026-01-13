@@ -3,7 +3,7 @@
  * This file is imported as a side effect to register the Discord adapter
  */
 
-import { registry } from '@switchboard/core';
+import { registry } from '@aarekaz/switchboard-core';
 import { DiscordAdapter } from './adapter.js';
 
 // Create and register the Discord adapter

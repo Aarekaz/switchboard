@@ -45,9 +45,9 @@ Comprehensive guide covering:
 Location: `docs/api/README.md`
 
 Complete API documentation including:
-- Core package (@switchboard/core)
-- Discord adapter (@switchboard/discord)
-- Slack adapter (@switchboard/slack)
+- Core package (@aarekaz/switchboard-core)
+- Discord adapter (@aarekaz/switchboard-discord)
+- Slack adapter (@aarekaz/switchboard-slack)
 - All interfaces, types, and methods
 - Usage examples
 - Best practices

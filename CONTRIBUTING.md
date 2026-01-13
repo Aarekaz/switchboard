@@ -92,9 +92,9 @@ switchboard/
 
 ### Package Organization
 
-- **@switchboard/core**: Platform-agnostic interfaces and types
-- **@switchboard/discord**: Discord-specific implementation
-- **@switchboard/slack**: Slack-specific implementation
+- **@aarekaz/switchboard-core**: Platform-agnostic interfaces and types
+- **@aarekaz/switchboard-discord**: Discord-specific implementation
+- **@aarekaz/switchboard-slack**: Slack-specific implementation
 
 Each package follows this structure:
 ```
@@ -176,7 +176,7 @@ Then create a Pull Request on GitHub.
 pnpm test
 
 # Run tests for specific package
-pnpm --filter @switchboard/core test
+pnpm --filter @aarekaz/switchboard-core test
 
 # Run tests in watch mode
 pnpm test --watch
@@ -290,9 +290,9 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ### Scopes
 
-- `core` - Changes to @switchboard/core
-- `discord` - Changes to @switchboard/discord
-- `slack` - Changes to @switchboard/slack
+- `core` - Changes to @aarekaz/switchboard-core
+- `discord` - Changes to @aarekaz/switchboard-discord
+- `slack` - Changes to @aarekaz/switchboard-slack
 - `examples` - Changes to examples
 - `docs` - Documentation changes
 
@@ -386,13 +386,13 @@ Create these files:
 **package.json**:
 ```json
 {
-  "name": "@switchboard/your-platform",
+  "name": "@aarekaz/switchboard-your-platform",
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "dependencies": {
-    "@switchboard/core": "workspace:*",
+    "@aarekaz/switchboard-core": "workspace:*",
     "your-platform-sdk": "^1.0.0"
   }
 }
@@ -415,7 +415,7 @@ Create these files:
 ### 3. Implement PlatformAdapter
 
 ```typescript
-import type { PlatformAdapter, Result, UnifiedMessage } from '@switchboard/core';
+import type { PlatformAdapter, Result, UnifiedMessage } from '@aarekaz/switchboard-core';
 
 export class YourPlatformAdapter implements PlatformAdapter {
   readonly name = 'your-platform-adapter';

@@ -8,5 +8,5 @@ export default defineConfig({
   sourcemap: true,
   minify: false,
   treeshake: true,
-  external: ['@switchboard/core', 'discord.js'],
+  external: ['@aarekaz/switchboard-core', 'discord.js'],
 });

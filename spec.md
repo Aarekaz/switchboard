@@ -97,7 +97,7 @@ Switchboard is a universal SDK for chat platforms that enables developers to bui
 
 2. **Auto-Registration Pattern**
    ```typescript
-   import '@switchboard/discord'; // Side-effect: registers adapter
+   import '@aarekaz/switchboard-discord'; // Side-effect: registers adapter
    ```
    - Platform adapters register themselves when imported
    - Core maintains a registry of available adapters
@@ -444,7 +444,7 @@ switchboard/
 │       └── release.yml
 │
 ├── packages/
-│   ├── core/                           # @switchboard/core
+│   ├── core/                           # @aarekaz/switchboard-core
 │   │   ├── src/
 │   │   │   ├── types/
 │   │   │   │   ├── message.ts          # UnifiedMessage
@@ -485,7 +485,7 @@ switchboard/
 │   │   ├── tsconfig.json
 │   │   └── README.md
 │   │
-│   ├── discord/                        # @switchboard/discord
+│   ├── discord/                        # @aarekaz/switchboard-discord
 │   │   ├── src/
 │   │   │   ├── adapter.ts              # Discord adapter implementation
 │   │   │   ├── types.ts                # Discord-specific types
@@ -498,13 +498,13 @@ switchboard/
 │   │   ├── tsconfig.json
 │   │   └── README.md
 │   │
-│   ├── slack/                          # @switchboard/slack
+│   ├── slack/                          # @aarekaz/switchboard-slack
 │   │   └── (same structure as discord)
 │   │
-│   ├── teams/                          # @switchboard/teams
+│   ├── teams/                          # @aarekaz/switchboard-teams
 │   │   └── (same structure as discord)
 │   │
-│   └── google-chat/                    # @switchboard/google-chat
+│   └── google-chat/                    # @aarekaz/switchboard-google-chat
 │       └── (same structure as discord)
 │
 ├── examples/
@@ -540,12 +540,12 @@ switchboard/
 ### Package Dependencies
 
 ```
-@switchboard/core
+@aarekaz/switchboard-core
   ↑
-  ├── @switchboard/discord (depends on core)
-  ├── @switchboard/slack (depends on core)
-  ├── @switchboard/teams (depends on core)
-  └── @switchboard/google-chat (depends on core)
+  ├── @aarekaz/switchboard-discord (depends on core)
+  ├── @aarekaz/switchboard-slack (depends on core)
+  ├── @aarekaz/switchboard-teams (depends on core)
+  └── @aarekaz/switchboard-google-chat (depends on core)
 ```
 
 ---
@@ -744,7 +744,7 @@ export class SwitchboardError extends Error {
 export class AdapterNotFoundError extends SwitchboardError {
   constructor(platform: PlatformType) {
     super(
-      `No adapter found for platform: ${platform}. Did you import @switchboard/${platform}?`,
+      `No adapter found for platform: ${platform}. Did you import @aarekaz/switchboard-${platform}?`,
       'ADAPTER_NOT_FOUND',
       platform
     );
@@ -817,7 +817,7 @@ bot.onMessage(async (message) => {
 **Tasks:**
 - [ ] Initialize monorepo with pnpm workspaces
 - [ ] Set up TypeScript configuration (strict mode)
-- [ ] Create `@switchboard/core` package
+- [ ] Create `@aarekaz/switchboard-core` package
 - [ ] Define core types:
   - UnifiedMessage
   - UnifiedEvent
@@ -836,7 +836,7 @@ bot.onMessage(async (message) => {
 
 **Deliverables:**
 - Working monorepo
-- `@switchboard/core` package (types only, no implementation)
+- `@aarekaz/switchboard-core` package (types only, no implementation)
 - Test infrastructure
 
 ---
@@ -846,7 +846,7 @@ bot.onMessage(async (message) => {
 **Goal:** Build the first working adapter (Discord)
 
 **Tasks:**
-- [ ] Create `@switchboard/discord` package
+- [ ] Create `@aarekaz/switchboard-discord` package
 - [ ] Install discord.js dependency
 - [ ] Implement DiscordAdapter:
   - connect() / disconnect()
@@ -864,7 +864,7 @@ bot.onMessage(async (message) => {
 - ✅ Example bot runs successfully
 
 **Deliverables:**
-- `@switchboard/discord` package
+- `@aarekaz/switchboard-discord` package
 - Working Discord bot example
 - Documentation for Discord setup
 
@@ -903,7 +903,7 @@ bot.onMessage(async (message) => {
 **Goal:** Add Slack support and validate abstraction quality
 
 **Tasks:**
-- [ ] Create `@switchboard/slack` package
+- [ ] Create `@aarekaz/switchboard-slack` package
 - [ ] Install @slack/bolt dependency
 - [ ] Implement SlackAdapter:
   - OAuth/token authentication
@@ -929,7 +929,7 @@ bot.onMessage(async (message) => {
 - Prove the "One Line Swap" guarantee
 
 **Deliverables:**
-- `@switchboard/slack` package
+- `@aarekaz/switchboard-slack` package
 - Slack bot example
 - Multi-platform example (same bot on Discord + Slack)
 
@@ -969,8 +969,8 @@ bot.onMessage(async (message) => {
 **Goal:** Add remaining platform adapters
 
 **Tasks:**
-- [ ] Create `@switchboard/teams` package
-- [ ] Create `@switchboard/google-chat` package
+- [ ] Create `@aarekaz/switchboard-teams` package
+- [ ] Create `@aarekaz/switchboard-google-chat` package
 - [ ] Implement adapters
 - [ ] Test "One Line Swap" with all 4 platforms
 - [ ] Create comprehensive multi-platform example
@@ -1125,7 +1125,7 @@ describe('DiscordAdapter', () => {
    - Measure: Vitest coverage reports
 
 2. **Bundle Size**
-   - Target: < 50KB for @switchboard/core (minified + gzipped)
+   - Target: < 50KB for @aarekaz/switchboard-core (minified + gzipped)
    - Target: < 100KB per adapter (including dependencies)
    - Measure: bundlephobia.com
 
@@ -1184,11 +1184,11 @@ describe('DiscordAdapter', () => {
 **Example:**
 ```typescript
 // Auto-registration (default)
-import '@switchboard/discord';
+import '@aarekaz/switchboard-discord';
 const bot = createBot({ platform: 'discord' });
 
 // Explicit registration (power users)
-import { discordAdapter } from '@switchboard/discord';
+import { discordAdapter } from '@aarekaz/switchboard-discord';
 const bot = createBot({ adapter: discordAdapter });
 ```
 

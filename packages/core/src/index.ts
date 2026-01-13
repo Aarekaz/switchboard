@@ -1,5 +1,5 @@
 /**
- * @switchboard/core
+ * @aarekaz/switchboard-core
  *
  * Core types, interfaces, and client API for Switchboard SDK
  * Build chat bots once, deploy everywhere.

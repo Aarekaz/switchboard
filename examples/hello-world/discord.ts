@@ -7,8 +7,8 @@
 // Load environment variables from .env file
 import 'dotenv/config';
 
-import { createBot } from '@switchboard/core';
-import '@switchboard/discord';
+import { createBot } from '@aarekaz/switchboard-core';
+import '@aarekaz/switchboard-discord';
 
 async function main() {
   // Validate environment variable

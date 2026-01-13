@@ -1,11 +1,11 @@
 /**
- * @switchboard/slack
+ * @aarekaz/switchboard-slack
  * Slack adapter for Switchboard SDK
  *
  * @example
  * ```typescript
- * import { createBot } from '@switchboard/core';
- * import '@switchboard/slack';
+ * import { createBot } from '@aarekaz/switchboard-core';
+ * import '@aarekaz/switchboard-slack';
  *
  * const bot = createBot({
  *   platform: 'slack',

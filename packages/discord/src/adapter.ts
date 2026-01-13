@@ -19,7 +19,7 @@ import type {
   UnifiedEvent,
   Channel,
   User,
-} from '@switchboard/core';
+} from '@aarekaz/switchboard-core';
 import {
   ok,
   err,
@@ -28,7 +28,7 @@ import {
   MessageEditError,
   MessageDeleteError,
   ReactionError,
-} from '@switchboard/core';
+} from '@aarekaz/switchboard-core';
 import {
   normalizeMessage,
   normalizeChannel,
