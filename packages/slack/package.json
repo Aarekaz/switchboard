@@ -1,5 +1,5 @@
 {
-  "name": "@switchboard/slack",
+  "name": "@aarekaz/switchboard-slack",
   "version": "0.2.1",
   "description": "Slack adapter for Switchboard SDK",
   "type": "module",

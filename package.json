@@ -1,5 +1,5 @@
 {
-  "name": "switchboard",
+  "name": "@aarekaz/switchboard",
   "version": "0.2.1",
   "private": true,
   "description": "Universal SDK for chat platforms - build bots once, deploy everywhere",
