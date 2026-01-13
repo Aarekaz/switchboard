@@ -2,6 +2,11 @@
 set -euo pipefail
 
 VERSION="${1:-}"
+if [[ "$VERSION" == "--" ]]; then
+  VERSION="${2:-}"
+fi
+
+VERSION="${VERSION#v}"
 
 if [[ -z "$VERSION" ]]; then
   echo "Usage: $0 <version>"
