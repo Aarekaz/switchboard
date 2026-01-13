@@ -1,6 +1,6 @@
 {
   "name": "@aarekaz/switchboard",
-  "version": "0.3.1",
+  "version": "0.3.3",
   "description": "Universal SDK for chat platforms - build bots once, deploy everywhere",
   "keywords": [
     "chat",
