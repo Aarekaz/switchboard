@@ -4,7 +4,7 @@ This document describes how to create releases for Switchboard.
 
 ## Prerequisites
 
-1. **npm account** with publish rights to `@switchboard` scope
+1. **npm account** with publish rights to `@aarekaz` scope
 2. **GitHub personal access token** with repo access (automatic via GITHUB_TOKEN)
 3. **Local environment** set up with pnpm
 
@@ -66,13 +66,14 @@ git push origin v0.3.0
 
 ```bash
 # Check npm
+npm view @aarekaz/switchboard version
 npm view @aarekaz/switchboard-core version
 npm view @aarekaz/switchboard-discord version
 npm view @aarekaz/switchboard-slack version
 
 # Test installation
 mkdir test-install && cd test-install
-pnpm add @aarekaz/switchboard-core @aarekaz/switchboard-discord
+pnpm add @aarekaz/switchboard
 ```
 
 ### Step 6: Announce

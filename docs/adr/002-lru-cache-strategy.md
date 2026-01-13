@@ -204,7 +204,7 @@ const cache = new Map<string, MessageContext>();
 Users can override defaults:
 
 ```typescript
-import { SlackAdapter } from '@aarekaz/switchboard-slack';
+import { SlackAdapter } from '@aarekaz/switchboard/slack';
 
 const adapter = new SlackAdapter({
   cacheSize: 5000,              // Store more messages

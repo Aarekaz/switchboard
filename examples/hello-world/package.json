@@ -4,12 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx discord.ts"
+    "dev": "tsx app.ts"
   },
   "dependencies": {
-    "@aarekaz/switchboard-core": "workspace:*",
-    "@aarekaz/switchboard-discord": "workspace:*",
-    "@aarekaz/switchboard-slack": "workspace:*",
+    "@aarekaz/switchboard": "workspace:*",
     "dotenv": "^17.2.3"
   },
   "devDependencies": {

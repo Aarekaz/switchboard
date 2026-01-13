@@ -7,6 +7,16 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@aarekaz/switchboard-core':
+        specifier: workspace:*
+        version: link:packages/core
+      '@aarekaz/switchboard-discord':
+        specifier: workspace:*
+        version: link:packages/discord
+      '@aarekaz/switchboard-slack':
+        specifier: workspace:*
+        version: link:packages/slack
     devDependencies:
       '@types/node':
         specifier: ^20.11.5
@@ -41,15 +51,9 @@ importers:
 
   examples/hello-world:
     dependencies:
-      '@aarekaz/switchboard-core':
+      '@aarekaz/switchboard':
         specifier: workspace:*
-        version: link:../../packages/core
-      '@aarekaz/switchboard-discord':
-        specifier: workspace:*
-        version: link:../../packages/discord
-      '@aarekaz/switchboard-slack':
-        specifier: workspace:*
-        version: link:../../packages/slack
+        version: link:../..
       dotenv:
         specifier: ^17.2.3
         version: 17.2.3

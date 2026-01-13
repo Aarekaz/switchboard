@@ -45,6 +45,7 @@ Comprehensive guide covering:
 Location: `docs/api/README.md`
 
 Complete API documentation including:
+- Umbrella package (@aarekaz/switchboard)
 - Core package (@aarekaz/switchboard-core)
 - Discord adapter (@aarekaz/switchboard-discord)
 - Slack adapter (@aarekaz/switchboard-slack)

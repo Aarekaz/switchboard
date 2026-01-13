@@ -4,8 +4,9 @@ Simple bot examples demonstrating Switchboard SDK's cross-platform capabilities.
 
 ## Overview
 
-This directory contains three example bots:
+This directory contains example bots:
 
+- **app.ts** - Unified example (recommended)
 - **discord.ts** - Basic Discord bot
 - **slack.ts** - Basic Slack bot
 - **one-line-swap.ts** - Demonstrates platform switching with minimal code changes
@@ -95,7 +96,22 @@ cp .env.example .env
 
 ## Running the Examples
 
-### Discord Bot
+### Unified Bot (Recommended)
+
+```bash
+# Defaults to Discord if PLATFORM is not set
+pnpm dev
+
+# Switch to Slack
+PLATFORM=slack pnpm dev
+```
+
+Test by sending:
+- "ping" → Bot replies with "pong!"
+- "hello" → Bot mentions you
+- "react" → Bot adds a 👍 reaction (requires `reactions:write` on Slack)
+
+### Discord Bot (Legacy)
 
 ```bash
 pnpm tsx discord.ts
@@ -105,7 +121,7 @@ Test in Discord by sending:
 - "ping" → Bot replies with "pong!"
 - "hello" → Bot mentions you
 
-### Slack Bot
+### Slack Bot (Legacy)
 
 ```bash
 pnpm tsx slack.ts

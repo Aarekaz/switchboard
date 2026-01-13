@@ -10,9 +10,9 @@
  */
 
 import 'dotenv/config';
-import { createBot } from '@aarekaz/switchboard-core';
-import '@aarekaz/switchboard-discord';
-import '@aarekaz/switchboard-slack';
+import { createBot } from '@aarekaz/switchboard';
+import '@aarekaz/switchboard/discord';
+import '@aarekaz/switchboard/slack';
 
 async function main() {
   // ═══════════════════════════════════════════════════════════════

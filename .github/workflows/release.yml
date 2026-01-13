@@ -97,7 +97,7 @@ jobs:
             ## Installation
 
             ```bash
-            pnpm add @aarekaz/switchboard-core @aarekaz/switchboard-discord @aarekaz/switchboard-slack
+            pnpm add @aarekaz/switchboard
             ```
 
             ## Documentation

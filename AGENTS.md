@@ -3,7 +3,7 @@
 ## Project Overview
 - Monorepo for the Switchboard SDK (core + platform adapters) using pnpm workspaces.
 - Packages are ESM TypeScript and built with tsup.
-- Public package scope is `@aarekaz` with names like `@aarekaz/switchboard-core`.
+- Public package scope is `@aarekaz`, with the primary install at `@aarekaz/switchboard`.
 
 ## Repository Layout
 - `packages/core`: core types and client API.
@@ -13,6 +13,7 @@
 - `docs/`: setup, API docs, ADRs, and guides.
 
 ## Package Naming
+- Umbrella: `@aarekaz/switchboard`
 - Core: `@aarekaz/switchboard-core`
 - Discord: `@aarekaz/switchboard-discord`
 - Slack: `@aarekaz/switchboard-slack`

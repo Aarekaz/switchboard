@@ -6,8 +6,8 @@
  */
 
 import 'dotenv/config';
-import { createBot } from '@aarekaz/switchboard-core';
-import '@aarekaz/switchboard-discord';
+import { createBot } from '@aarekaz/switchboard';
+import '@aarekaz/switchboard/discord';
 
 async function main() {
   if (!process.env.DISCORD_TOKEN) {

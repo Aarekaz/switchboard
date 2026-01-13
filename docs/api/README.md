@@ -2,15 +2,22 @@
 
 Complete API documentation for Switchboard SDK.
 
-## Core Packages
+## Primary Package
 
-- [@aarekaz/switchboard-core](#switchboardcore) - Core types, client, and interfaces
-- [@aarekaz/switchboard-discord](#switchboarddiscord) - Discord adapter
-- [@aarekaz/switchboard-slack](#switchboardslack) - Slack adapter
+Install the umbrella package to access all platforms with one dependency:
+
+```bash
+pnpm add @aarekaz/switchboard
+```
+
+Subpath exports for adapters:
+- `@aarekaz/switchboard` - Core types, client, and interfaces
+- `@aarekaz/switchboard/discord` - Discord adapter
+- `@aarekaz/switchboard/slack` - Slack adapter
 
 ---
 
-## @aarekaz/switchboard-core
+## @aarekaz/switchboard
 
 The core package provides platform-agnostic interfaces and types.
 
@@ -34,8 +41,8 @@ function createBot<P extends PlatformType>(
 
 **Example:**
 ```typescript
-import { createBot } from '@aarekaz/switchboard-core';
-import '@aarekaz/switchboard-discord';
+import { createBot } from '@aarekaz/switchboard';
+import '@aarekaz/switchboard/discord';
 
 const bot = createBot({
   platform: 'discord',
@@ -600,14 +607,14 @@ interface PlatformAdapter {
 
 ---
 
-## @aarekaz/switchboard-discord
+## @aarekaz/switchboard/discord
 
 Discord platform adapter.
 
 ### Auto-Registration
 
 ```typescript
-import '@aarekaz/switchboard-discord';
+import '@aarekaz/switchboard/discord';
 ```
 
 Side-effect import automatically registers the Discord adapter.
@@ -627,8 +634,8 @@ interface DiscordCredentials {
 ### Example
 
 ```typescript
-import { createBot } from '@aarekaz/switchboard-core';
-import '@aarekaz/switchboard-discord';
+import { createBot } from '@aarekaz/switchboard';
+import '@aarekaz/switchboard/discord';
 
 const bot = createBot({
   platform: 'discord',
@@ -646,14 +653,14 @@ Discord adapter supports all core operations. See [Discord README](../../package
 
 ---
 
-## @aarekaz/switchboard-slack
+## @aarekaz/switchboard/slack
 
 Slack platform adapter with LRU caching for message operations.
 
 ### Auto-Registration
 
 ```typescript
-import '@aarekaz/switchboard-slack';
+import '@aarekaz/switchboard/slack';
 ```
 
 ### Credentials
@@ -693,8 +700,8 @@ interface SlackConfig {
 
 **Socket Mode** (recommended for development):
 ```typescript
-import { createBot } from '@aarekaz/switchboard-core';
-import '@aarekaz/switchboard-slack';
+import { createBot } from '@aarekaz/switchboard';
+import '@aarekaz/switchboard/slack';
 
 const bot = createBot({
   platform: 'slack',
@@ -720,7 +727,7 @@ const bot = createBot({
 
 **Custom Configuration**:
 ```typescript
-import { SlackAdapter } from '@aarekaz/switchboard-slack';
+import { SlackAdapter } from '@aarekaz/switchboard/slack';
 
 const adapter = new SlackAdapter({
   cacheSize: 5000,
@@ -862,7 +869,7 @@ if (!result.ok) {
 Switchboard is written in TypeScript and provides excellent type safety:
 
 ```typescript
-import { UnifiedMessage, Result } from '@aarekaz/switchboard-core';
+import { UnifiedMessage, Result } from '@aarekaz/switchboard';
 
 bot.onMessage(async (message: UnifiedMessage) => {
   // Full autocomplete and type checking
