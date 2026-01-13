@@ -9,6 +9,7 @@
   "dependencies": {
     "@switchboard/core": "workspace:*",
     "@switchboard/discord": "workspace:*",
+    "@switchboard/slack": "workspace:*",
     "dotenv": "^17.2.3"
   },
   "devDependencies": {

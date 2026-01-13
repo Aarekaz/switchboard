@@ -8,6 +8,7 @@ export type { PlatformType } from './platform.js';
 // Message types
 export type {
   UnifiedMessage,
+  MessageRef,
   Attachment,
   SendMessageOptions,
   UploadOptions,

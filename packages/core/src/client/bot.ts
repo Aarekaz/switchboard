@@ -3,6 +3,7 @@ import type { Result } from '../types/result.js';
 import type { PlatformType } from '../types/platform.js';
 import type {
   UnifiedMessage,
+  MessageRef,
   SendMessageOptions,
   UploadOptions,
 } from '../types/message.js';
@@ -89,41 +90,41 @@ export class Bot {
    * Edit an existing message
    */
   async editMessage(
-    messageId: string,
+    messageRef: MessageRef,
     newText: string
   ): Promise<Result<UnifiedMessage>> {
-    return this.adapter.editMessage(messageId, newText);
+    return this.adapter.editMessage(messageRef, newText);
   }
 
   /**
    * Delete a message
    */
-  async deleteMessage(messageId: string): Promise<Result<void>> {
-    return this.adapter.deleteMessage(messageId);
+  async deleteMessage(messageRef: MessageRef): Promise<Result<void>> {
+    return this.adapter.deleteMessage(messageRef);
   }
 
   /**
    * Add a reaction to a message
    */
-  async addReaction(messageId: string, emoji: string): Promise<Result<void>> {
-    return this.adapter.addReaction(messageId, emoji);
+  async addReaction(messageRef: MessageRef, emoji: string): Promise<Result<void>> {
+    return this.adapter.addReaction(messageRef, emoji);
   }
 
   /**
    * Remove a reaction from a message
    */
-  async removeReaction(messageId: string, emoji: string): Promise<Result<void>> {
-    return this.adapter.removeReaction(messageId, emoji);
+  async removeReaction(messageRef: MessageRef, emoji: string): Promise<Result<void>> {
+    return this.adapter.removeReaction(messageRef, emoji);
   }
 
   /**
    * Create a thread (or reply in a thread)
    */
   async createThread(
-    messageId: string,
+    messageRef: MessageRef,
     text: string
   ): Promise<Result<UnifiedMessage>> {
-    return this.adapter.createThread(messageId, text);
+    return this.adapter.createThread(messageRef, text);
   }
 
   /**

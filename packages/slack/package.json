@@ -1,0 +1,43 @@
+{
+  "name": "@switchboard/slack",
+  "version": "0.2.1",
+  "description": "Slack adapter for Switchboard SDK",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@slack/bolt": "^3.17.0",
+    "@switchboard/core": "workspace:*",
+    "lru-cache": "^10.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
+  },
+  "keywords": [
+    "switchboard",
+    "slack",
+    "bot",
+    "chat",
+    "adapter"
+  ],
+  "author": "",
+  "license": "MIT"
+}

@@ -17,6 +17,7 @@ export type {
   PlatformType,
   // Messages
   UnifiedMessage,
+  MessageRef,
   Attachment,
   SendMessageOptions,
   UploadOptions,

@@ -53,6 +53,37 @@ export interface UnifiedMessage {
 }
 
 /**
+ * Reference to a message - can be either a message ID string or a full UnifiedMessage object.
+ *
+ * **Why this exists:**
+ * Different platforms have different requirements for message operations:
+ * - Discord: Only needs message ID for edit/delete/react operations
+ * - Slack: Needs both channel ID and message timestamp (ts)
+ *
+ * **Usage recommendations:**
+ * - ✅ Passing UnifiedMessage works reliably on ALL platforms
+ * - ⚠️ Passing string ID works on Discord, works on Slack if message is in cache (95% of cases)
+ *
+ * **Platform notes:**
+ * - Discord: String IDs always work
+ * - Slack: String IDs work if the message was seen by the bot in the last hour.
+ *   For guaranteed reliability, pass the full message object.
+ *
+ * @example
+ * ```typescript
+ * // ✅ Recommended: Works everywhere, always
+ * bot.onMessage(async (message) => {
+ *   await bot.editMessage(message, 'Updated text');
+ *   await bot.addReaction(message, '👍');
+ * });
+ *
+ * // ⚠️ Works on Discord, works on Slack if cached
+ * await bot.editMessage(message.id, 'Updated text');
+ * ```
+ */
+export type MessageRef = string | UnifiedMessage;
+
+/**
  * Options for sending messages
  */
 export interface SendMessageOptions {

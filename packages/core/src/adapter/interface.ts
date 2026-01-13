@@ -1,6 +1,11 @@
 import type { Result } from '../types/result.js';
 import type { PlatformType } from '../types/platform.js';
-import type { UnifiedMessage, SendMessageOptions, UploadOptions } from '../types/message.js';
+import type {
+  UnifiedMessage,
+  MessageRef,
+  SendMessageOptions,
+  UploadOptions,
+} from '../types/message.js';
 import type { UnifiedEvent } from '../types/event.js';
 import type { Channel } from '../types/channel.js';
 import type { User } from '../types/user.js';
@@ -34,24 +39,24 @@ export interface PlatformAdapter {
 
   /** Edit an existing message */
   editMessage(
-    messageId: string,
+    messageRef: MessageRef,
     newText: string
   ): Promise<Result<UnifiedMessage>>;
 
   /** Delete a message */
-  deleteMessage(messageId: string): Promise<Result<void>>;
+  deleteMessage(messageRef: MessageRef): Promise<Result<void>>;
 
   // Reactions
   /** Add a reaction emoji to a message */
-  addReaction(messageId: string, emoji: string): Promise<Result<void>>;
+  addReaction(messageRef: MessageRef, emoji: string): Promise<Result<void>>;
 
   /** Remove a reaction emoji from a message */
-  removeReaction(messageId: string, emoji: string): Promise<Result<void>>;
+  removeReaction(messageRef: MessageRef, emoji: string): Promise<Result<void>>;
 
   // Thread operations
   /** Create a thread/reply to a message */
   createThread(
-    messageId: string,
+    messageRef: MessageRef,
     text: string
   ): Promise<Result<UnifiedMessage>>;
 

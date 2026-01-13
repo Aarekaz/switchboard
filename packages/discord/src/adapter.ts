@@ -15,6 +15,7 @@ import type {
   PlatformAdapter,
   Result,
   UnifiedMessage,
+  MessageRef,
   UnifiedEvent,
   Channel,
   User,
@@ -163,7 +164,7 @@ export class DiscordAdapter implements PlatformAdapter {
    * Edit a message
    */
   async editMessage(
-    messageId: string,
+    messageRef: MessageRef,
     newText: string
   ): Promise<Result<UnifiedMessage>> {
     if (!this.client) {
@@ -171,20 +172,46 @@ export class DiscordAdapter implements PlatformAdapter {
     }
 
     try {
-      // We need to find the message first
-      // This is a limitation - we need the channel ID, which we don't have
-      // For now, we'll return an error suggesting to cache messages
-      // A production implementation would cache sent messages
-      return err(
-        new MessageEditError(
-          'discord',
-          messageId,
-          new Error(
-            'Message editing requires message caching. Store the channel ID when sending messages.'
+      // Extract message ID and channel ID from MessageRef
+      const messageId = typeof messageRef === 'string' ? messageRef : messageRef.id;
+      const channelId = typeof messageRef === 'string'
+        ? null
+        : messageRef.channelId;
+
+      if (!channelId) {
+        return err(
+          new MessageEditError(
+            'discord',
+            messageId,
+            new Error(
+              'Cannot edit message: channel context not found.\n' +
+              'Pass the full message object instead:\n' +
+              '  bot.editMessage(message, "text")  // ✅ Works\n' +
+              '  bot.editMessage(message.id, "text")  // ❌ Missing channel context'
+            )
           )
-        )
-      );
+        );
+      }
+
+      // Fetch the channel
+      const channel = await this.client.channels.fetch(channelId);
+      if (!channel || !('messages' in channel)) {
+        return err(
+          new MessageEditError(
+            'discord',
+            messageId,
+            new Error(`Channel ${channelId} not found or is not a text channel`)
+          )
+        );
+      }
+
+      // Fetch and edit the message
+      const message = await (channel as TextChannel).messages.fetch(messageId);
+      const editedMessage = await message.edit(newText);
+
+      return ok(normalizeMessage(editedMessage));
     } catch (error) {
+      const messageId = typeof messageRef === 'string' ? messageRef : messageRef.id;
       return err(
         new MessageEditError(
           'discord',
@@ -198,23 +225,52 @@ export class DiscordAdapter implements PlatformAdapter {
   /**
    * Delete a message
    */
-  async deleteMessage(messageId: string): Promise<Result<void>> {
+  async deleteMessage(messageRef: MessageRef): Promise<Result<void>> {
     if (!this.client) {
       return err(new ConnectionError('discord', new Error('Not connected')));
     }
 
     try {
-      // Same limitation as editMessage - need channel ID
-      return err(
-        new MessageDeleteError(
-          'discord',
-          messageId,
-          new Error(
-            'Message deletion requires message caching. Store the channel ID when sending messages.'
+      // Extract message ID and channel ID from MessageRef
+      const messageId = typeof messageRef === 'string' ? messageRef : messageRef.id;
+      const channelId = typeof messageRef === 'string'
+        ? null
+        : messageRef.channelId;
+
+      if (!channelId) {
+        return err(
+          new MessageDeleteError(
+            'discord',
+            messageId,
+            new Error(
+              'Cannot delete message: channel context not found.\n' +
+              'Pass the full message object instead:\n' +
+              '  bot.deleteMessage(message)  // ✅ Works\n' +
+              '  bot.deleteMessage(message.id)  // ❌ Missing channel context'
+            )
           )
-        )
-      );
+        );
+      }
+
+      // Fetch the channel
+      const channel = await this.client.channels.fetch(channelId);
+      if (!channel || !('messages' in channel)) {
+        return err(
+          new MessageDeleteError(
+            'discord',
+            messageId,
+            new Error(`Channel ${channelId} not found or is not a text channel`)
+          )
+        );
+      }
+
+      // Fetch and delete the message
+      const message = await (channel as TextChannel).messages.fetch(messageId);
+      await message.delete();
+
+      return ok(undefined);
     } catch (error) {
+      const messageId = typeof messageRef === 'string' ? messageRef : messageRef.id;
       return err(
         new MessageDeleteError(
           'discord',
@@ -228,24 +284,55 @@ export class DiscordAdapter implements PlatformAdapter {
   /**
    * Add a reaction to a message
    */
-  async addReaction(messageId: string, emoji: string): Promise<Result<void>> {
+  async addReaction(messageRef: MessageRef, emoji: string): Promise<Result<void>> {
     if (!this.client) {
       return err(new ConnectionError('discord', new Error('Not connected')));
     }
 
     try {
-      // Same limitation - need channel ID
-      return err(
-        new ReactionError(
-          'discord',
-          messageId,
-          emoji,
-          new Error(
-            'Adding reactions requires message caching. Store the channel ID when sending messages.'
+      // Extract message ID and channel ID from MessageRef
+      const messageId = typeof messageRef === 'string' ? messageRef : messageRef.id;
+      const channelId = typeof messageRef === 'string'
+        ? null
+        : messageRef.channelId;
+
+      if (!channelId) {
+        return err(
+          new ReactionError(
+            'discord',
+            messageId,
+            emoji,
+            new Error(
+              'Cannot add reaction: channel context not found.\n' +
+              'Pass the full message object instead:\n' +
+              '  bot.addReaction(message, emoji)  // ✅ Works\n' +
+              '  bot.addReaction(message.id, emoji)  // ❌ Missing channel context'
+            )
           )
-        )
-      );
+        );
+      }
+
+      // Fetch the channel
+      const channel = await this.client.channels.fetch(channelId);
+      if (!channel || !('messages' in channel)) {
+        return err(
+          new ReactionError(
+            'discord',
+            messageId,
+            emoji,
+            new Error(`Channel ${channelId} not found or is not a text channel`)
+          )
+        );
+      }
+
+      // Fetch the message and add reaction
+      const message = await (channel as TextChannel).messages.fetch(messageId);
+      const discordEmoji = toDiscordEmoji(emoji);
+      await message.react(discordEmoji);
+
+      return ok(undefined);
     } catch (error) {
+      const messageId = typeof messageRef === 'string' ? messageRef : messageRef.id;
       return err(
         new ReactionError(
           'discord',
@@ -261,7 +348,7 @@ export class DiscordAdapter implements PlatformAdapter {
    * Remove a reaction from a message
    */
   async removeReaction(
-    messageId: string,
+    messageRef: MessageRef,
     emoji: string
   ): Promise<Result<void>> {
     if (!this.client) {
@@ -269,18 +356,51 @@ export class DiscordAdapter implements PlatformAdapter {
     }
 
     try {
-      // Same limitation - need channel ID
-      return err(
-        new ReactionError(
-          'discord',
-          messageId,
-          emoji,
-          new Error(
-            'Removing reactions requires message caching. Store the channel ID when sending messages.'
+      // Extract message ID and channel ID from MessageRef
+      const messageId = typeof messageRef === 'string' ? messageRef : messageRef.id;
+      const channelId = typeof messageRef === 'string'
+        ? null
+        : messageRef.channelId;
+
+      if (!channelId) {
+        return err(
+          new ReactionError(
+            'discord',
+            messageId,
+            emoji,
+            new Error(
+              'Cannot remove reaction: channel context not found.\n' +
+              'Pass the full message object instead:\n' +
+              '  bot.removeReaction(message, emoji)  // ✅ Works\n' +
+              '  bot.removeReaction(message.id, emoji)  // ❌ Missing channel context'
+            )
           )
-        )
-      );
+        );
+      }
+
+      // Fetch the channel
+      const channel = await this.client.channels.fetch(channelId);
+      if (!channel || !('messages' in channel)) {
+        return err(
+          new ReactionError(
+            'discord',
+            messageId,
+            emoji,
+            new Error(`Channel ${channelId} not found or is not a text channel`)
+          )
+        );
+      }
+
+      // Fetch the message and remove reaction
+      const message = await (channel as TextChannel).messages.fetch(messageId);
+      const discordEmoji = toDiscordEmoji(emoji);
+
+      // Remove the bot's own reaction
+      await message.reactions.cache.get(discordEmoji)?.users.remove(this.client.user!.id);
+
+      return ok(undefined);
     } catch (error) {
+      const messageId = typeof messageRef === 'string' ? messageRef : messageRef.id;
       return err(
         new ReactionError(
           'discord',
@@ -296,7 +416,7 @@ export class DiscordAdapter implements PlatformAdapter {
    * Create a thread from a message
    */
   async createThread(
-    messageId: string,
+    messageRef: MessageRef,
     text: string
   ): Promise<Result<UnifiedMessage>> {
     if (!this.client) {
@@ -304,21 +424,55 @@ export class DiscordAdapter implements PlatformAdapter {
     }
 
     try {
-      // Same limitation - need channel ID and message
-      return err(
-        new MessageSendError(
-          'discord',
-          'unknown',
-          new Error(
-            'Creating threads requires message caching. Store the channel and message when sending messages.'
+      // Extract message ID and channel ID from MessageRef
+      const messageId = typeof messageRef === 'string' ? messageRef : messageRef.id;
+      const channelId = typeof messageRef === 'string'
+        ? null
+        : messageRef.channelId;
+
+      if (!channelId) {
+        return err(
+          new MessageSendError(
+            'discord',
+            'unknown',
+            new Error(
+              'Cannot create thread: channel context not found.\n' +
+              'Pass the full message object instead:\n' +
+              '  bot.createThread(message, text)  // ✅ Works\n' +
+              '  bot.createThread(message.id, text)  // ❌ Missing channel context'
+            )
           )
-        )
-      );
+        );
+      }
+
+      // Fetch the channel
+      const channel = await this.client.channels.fetch(channelId);
+      if (!channel || !('messages' in channel)) {
+        return err(
+          new MessageSendError(
+            'discord',
+            channelId,
+            new Error(`Channel ${channelId} not found or is not a text channel`)
+          )
+        );
+      }
+
+      // Fetch the message and create thread
+      const message = await (channel as TextChannel).messages.fetch(messageId);
+      const thread = await message.startThread({
+        name: text.substring(0, 100), // Discord thread names max 100 chars
+      });
+
+      // Send the first message in the thread
+      const threadMessage = await thread.send(text);
+
+      return ok(normalizeMessage(threadMessage));
     } catch (error) {
+      const channelId = typeof messageRef === 'string' ? 'unknown' : messageRef.channelId;
       return err(
         new MessageSendError(
           'discord',
-          'unknown',
+          channelId,
           error instanceof Error ? error : new Error(String(error))
         )
       );
