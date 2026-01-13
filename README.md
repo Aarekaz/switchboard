@@ -1,4 +1,4 @@
-# Switchboard
+# Switchboard (v0.3.0)
 
 **Build chat bots once, deploy everywhere.**
 
