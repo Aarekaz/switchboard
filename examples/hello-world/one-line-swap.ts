@@ -16,7 +16,7 @@ import '@switchboard/slack';
 
 async function main() {
   // ═══════════════════════════════════════════════════════════════
-  // 🎯 ONE LINE SWAP: Change ONLY this line to switch platforms
+  // ONE LINE SWAP: Change ONLY this line to switch platforms
   // ═══════════════════════════════════════════════════════════════
   const platform = (process.env.PLATFORM || 'discord') as 'discord' | 'slack';
   // ═══════════════════════════════════════════════════════════════
@@ -32,7 +32,7 @@ async function main() {
   // Create bot (same API regardless of platform)
   const bot = createBot({ platform, credentials });
 
-  console.log(`🤖 Connecting to ${platform}...`);
+  console.log(`Connecting to ${platform}...`);
 
   // ═══════════════════════════════════════════════════════════════
   // ALL CODE BELOW IS IDENTICAL FOR BOTH PLATFORMS
@@ -40,25 +40,25 @@ async function main() {
   // ═══════════════════════════════════════════════════════════════
 
   bot.onMessage(async (message) => {
-    console.log(`📨 [${platform}] Message from ${message.userId}: ${message.text}`);
+    console.log(`[${platform}] Message from ${message.userId}: ${message.text}`);
 
     // Test 1: Simple reply
     if (message.text.toLowerCase().includes('ping')) {
-      const result = await bot.reply(message, 'pong! 🏓');
+      const result = await bot.reply(message, 'pong!');
 
       if (result.ok) {
-        console.log(`✅ [${platform}] Replied with pong!`);
+        console.log(`[${platform}] Replied with pong!`);
       } else {
-        console.error(`❌ [${platform}] Failed to reply:`, result.error);
+        console.error(`[${platform}] Failed to reply:`, result.error);
       }
     }
 
     // Test 2: Mention user
     if (message.text.toLowerCase().includes('hello')) {
-      const result = await bot.reply(message, `Hello, <@${message.userId}>! 👋`);
+      const result = await bot.reply(message, `Hello, <@${message.userId}>!`);
 
       if (result.ok) {
-        console.log(`✅ [${platform}] Sent greeting!`);
+        console.log(`[${platform}] Sent greeting!`);
       }
     }
 
@@ -67,46 +67,46 @@ async function main() {
       const sendResult = await bot.reply(message, 'Original message');
 
       if (sendResult.ok) {
-        console.log(`✅ [${platform}] Sent message to edit`);
+        console.log(`[${platform}] Sent message to edit`);
 
         // Wait a moment, then edit
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        const editResult = await bot.editMessage(sendResult.value, 'Edited message! ✨');
+        const editResult = await bot.editMessage(sendResult.value, 'Edited message!');
 
         if (editResult.ok) {
-          console.log(`✅ [${platform}] Successfully edited message`);
+          console.log(`[${platform}] Successfully edited message`);
         } else {
-          console.error(`❌ [${platform}] Failed to edit:`, editResult.error);
+          console.error(`[${platform}] Failed to edit:`, editResult.error);
         }
       }
     }
 
     // Test 4: Add reaction (demonstrates MessageRef)
     if (message.text.toLowerCase().includes('react')) {
-      const result = await bot.addReaction(message, '👍');
+      const result = await bot.addReaction(message, 'thumbsup');
 
       if (result.ok) {
-        console.log(`✅ [${platform}] Added reaction`);
+        console.log(`[${platform}] Added reaction`);
       } else {
-        console.error(`❌ [${platform}] Failed to add reaction:`, result.error);
+        console.error(`[${platform}] Failed to add reaction:`, result.error);
       }
     }
 
     // Test 5: Thread reply
     if (message.text.toLowerCase().includes('thread')) {
-      const result = await bot.createThread(message, 'Started a thread! 🧵');
+      const result = await bot.createThread(message, 'Started a thread!');
 
       if (result.ok) {
-        console.log(`✅ [${platform}] Created thread`);
+        console.log(`[${platform}] Created thread`);
       } else {
-        console.error(`❌ [${platform}] Failed to create thread:`, result.error);
+        console.error(`[${platform}] Failed to create thread:`, result.error);
       }
     }
   });
 
   await bot.start();
-  console.log(`✅ Bot is running on ${platform}!`);
+  console.log(`Bot is running on ${platform}!`);
   console.log('');
   console.log('Test commands:');
   console.log('  - "ping" → Bot replies with "pong!"');

@@ -12,5 +12,5 @@ registry.register('slack', slackAdapter);
 
 // Log registration in development
 if (process.env.NODE_ENV !== 'production') {
-  console.log('✅ Slack adapter registered');
+  console.log('[Switchboard] Slack adapter registered');
 }

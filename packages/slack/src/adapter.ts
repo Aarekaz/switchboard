@@ -821,7 +821,7 @@ export class SlackAdapter implements PlatformAdapter {
     const total = this.cacheHits + this.cacheMisses;
     if (total > 0 && total % 1000 === 0) {
       const hitRate = ((this.cacheHits / total) * 100).toFixed(1);
-      console.log(`📊 Slack cache hit rate: ${hitRate}% (${this.cacheHits}/${total})`);
+      console.log(`[Switchboard] Slack cache hit rate: ${hitRate}% (${this.cacheHits}/${total})`);
     }
   }
 }

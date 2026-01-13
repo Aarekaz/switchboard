@@ -681,7 +681,7 @@ export class DiscordAdapter implements PlatformAdapter {
 
     // Ready event
     this.client.on('ready', () => {
-      console.log(`✅ Discord bot connected as ${this.client!.user!.tag}`);
+      console.log(`[Switchboard] Discord bot connected as ${this.client!.user!.tag}`);
     });
 
     // Error handling

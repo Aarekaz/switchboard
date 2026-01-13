@@ -12,5 +12,5 @@ registry.register('discord', discordAdapter);
 
 // Log registration (only in development)
 if (process.env.NODE_ENV !== 'production') {
-  console.log('✅ Discord adapter registered');
+  console.log('[Switchboard] Discord adapter registered');
 }

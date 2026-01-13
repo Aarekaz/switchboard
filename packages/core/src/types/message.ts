@@ -61,8 +61,8 @@ export interface UnifiedMessage {
  * - Slack: Needs both channel ID and message timestamp (ts)
  *
  * **Usage recommendations:**
- * - ✅ Passing UnifiedMessage works reliably on ALL platforms
- * - ⚠️ Passing string ID works on Discord, works on Slack if message is in cache (95% of cases)
+ * - Passing UnifiedMessage works reliably on ALL platforms
+ * - Passing string ID works on Discord, works on Slack if message is in cache (95% of cases)
  *
  * **Platform notes:**
  * - Discord: String IDs always work
@@ -71,13 +71,13 @@ export interface UnifiedMessage {
  *
  * @example
  * ```typescript
- * // ✅ Recommended: Works everywhere, always
+ * // Recommended: Works everywhere, always
  * bot.onMessage(async (message) => {
  *   await bot.editMessage(message, 'Updated text');
- *   await bot.addReaction(message, '👍');
+ *   await bot.addReaction(message, 'thumbsup');
  * });
  *
- * // ⚠️ Works on Discord, works on Slack if cached
+ * // Works on Discord, works on Slack if cached
  * await bot.editMessage(message.id, 'Updated text');
  * ```
  */

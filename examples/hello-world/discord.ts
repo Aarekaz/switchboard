@@ -24,36 +24,36 @@ async function main() {
     },
   });
 
-  console.log('🤖 Connecting to Discord...');
+  console.log('Connecting to Discord...');
 
   // Listen for messages
   bot.onMessage(async (message) => {
-    console.log(`📨 Message from ${message.userId}: ${message.text}`);
+    console.log(`Message from ${message.userId}: ${message.text}`);
 
     // Respond to "ping" with "pong"
     if (message.text.toLowerCase().includes('ping')) {
-      const result = await bot.reply(message, 'pong! 🏓');
+      const result = await bot.reply(message, 'pong!');
 
       if (result.ok) {
-        console.log('✅ Replied with pong!');
+        console.log('Replied with pong!');
       } else {
-        console.error('❌ Failed to reply:', result.error);
+        console.error('Failed to reply:', result.error);
       }
     }
 
     // Respond to "hello" with a greeting
     if (message.text.toLowerCase().includes('hello')) {
-      const result = await bot.reply(message, `Hello, <@${message.userId}>! 👋`);
+      const result = await bot.reply(message, `Hello, <@${message.userId}>!`);
 
       if (result.ok) {
-        console.log('✅ Sent greeting!');
+        console.log('Sent greeting!');
       }
     }
   });
 
   // Start the bot (connects to Discord)
   await bot.start();
-  console.log('✅ Bot is running! Send "ping" or "hello" in Discord to test.');
+  console.log('Bot is running! Send "ping" or "hello" in Discord to test.');
   console.log('   Press Ctrl+C to stop.');
 }
 
