@@ -30,3 +30,6 @@ export type { Channel, ChannelType } from './channel.js';
 
 // User types
 export type { User } from './user.js';
+
+// Context types
+export type { MessageContext, MessageHandler } from './context.js';

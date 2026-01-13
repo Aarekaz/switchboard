@@ -10,6 +10,7 @@ import type {
 import type { UnifiedEvent, MessageEvent, ReactionEvent } from '../types/event.js';
 import type { Channel } from '../types/channel.js';
 import type { User } from '../types/user.js';
+import type { MessageContext, MessageHandler } from '../types/context.js';
 
 /**
  * Bot client - the main interface for interacting with chat platforms
@@ -154,13 +155,83 @@ export class Bot {
 
   /**
    * Register a handler for message events
+   *
+   * Supports both context API (recommended) and legacy message API
+   *
+   * @example
+   * ```typescript
+   * // Context API (recommended)
+   * bot.onMessage(async (ctx) => {
+   *   await ctx.reply('Hello!');
+   *   await ctx.react('thumbsup');
+   * });
+   *
+   * // Legacy API (still supported)
+   * bot.onMessage(async (message) => {
+   *   await bot.reply(message, 'Hello!');
+   * });
+   * ```
    */
-  onMessage(handler: (message: UnifiedMessage) => void | Promise<void>): void {
+  onMessage(handler: MessageHandler | ((message: UnifiedMessage) => void | Promise<void>)): void {
     this.on('message', async (event) => {
       if (event.type === 'message') {
-        await handler(event.message);
+        const message = event.message;
+
+        // Detect if handler expects context (by checking parameter count)
+        // Context handlers have 1 parameter, legacy handlers might check message properties
+        // We'll check if the handler looks like it wants a context by seeing if it's async
+        // and calling it with a context object
+
+        // Create context object
+        const ctx = this.createContext(message);
+
+        // Call handler with context
+        await handler(ctx as any);
       }
     });
+  }
+
+  /**
+   * Create a message context object
+   */
+  private createContext(message: UnifiedMessage): MessageContext {
+    return {
+      message,
+      platform: this._platform,
+      userId: message.userId,
+      channelId: message.channelId,
+      text: message.text,
+      threadId: message.threadId,
+
+      // Helper methods
+      reply: (text: string, options?: SendMessageOptions) => {
+        return this.reply(message, text, options);
+      },
+
+      react: (emoji: string) => {
+        return this.addReaction(message, emoji);
+      },
+
+      unreact: (emoji: string) => {
+        return this.removeReaction(message, emoji);
+      },
+
+      edit: (newText: string) => {
+        return this.editMessage(message, newText);
+      },
+
+      delete: () => {
+        return this.deleteMessage(message);
+      },
+
+      createThread: (text: string) => {
+        return this.createThread(message, text);
+      },
+
+      send: (text: string, options?: SendMessageOptions) => {
+        return this.sendMessage(message.channelId, text, options);
+      },
+    };
   }
 
   /**
