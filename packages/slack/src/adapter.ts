@@ -691,7 +691,7 @@ export class SlackAdapter implements PlatformAdapter {
         return ok(users);
       } else {
         // Get all users
-        const result = await this.app.client.users.list();
+        const result = await this.app.client.users.list({});
 
         if (!result.ok || !result.members) {
           return err(
