@@ -1,6 +1,6 @@
 {
   "name": "@aarekaz/switchboard-discord",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Discord adapter for Switchboard SDK",
   "keywords": [
     "switchboard",
