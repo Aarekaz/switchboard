@@ -1,6 +1,6 @@
 {
   "name": "@aarekaz/switchboard",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Universal SDK for chat platforms - build bots once, deploy everywhere",
   "keywords": [
     "chat",
@@ -41,7 +41,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "pnpm -r --filter ./packages/** build && pnpm build:umbrella",
+    "build": "pnpm -r --filter \"./packages/**\" build && pnpm build:umbrella",
     "build:umbrella": "tsup",
     "dev": "pnpm -r --parallel dev",
     "test": "vitest",

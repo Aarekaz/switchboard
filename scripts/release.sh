@@ -18,9 +18,6 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
   exit 1
 fi
 
-echo "Bumping versions to $VERSION..."
-pnpm -r --include-workspace-root exec pnpm version "$VERSION" --no-git-tag-version
-
 echo "Running lint..."
 pnpm lint
 
@@ -29,6 +26,9 @@ pnpm build
 
 echo "Running tests..."
 pnpm test
+
+echo "Bumping versions to $VERSION..."
+pnpm -r --include-workspace-root exec pnpm version "$VERSION" --no-git-tag-version
 
 echo "Committing and tagging release..."
 git add -A
