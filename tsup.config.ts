@@ -5,6 +5,7 @@ export default defineConfig({
     index: 'src/index.ts',
     discord: 'src/discord.ts',
     slack: 'src/slack.ts',
+    telegram: 'src/telegram.ts',
   },
   format: ['esm'],
   dts: true,
@@ -16,5 +17,6 @@ export default defineConfig({
     '@aarekaz/switchboard-core',
     '@aarekaz/switchboard-discord',
     '@aarekaz/switchboard-slack',
+    '@aarekaz/switchboard-telegram',
   ],
 });

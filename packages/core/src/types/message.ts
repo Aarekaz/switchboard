@@ -104,14 +104,13 @@ export interface SendMessageOptions {
     unfurl_media?: boolean;
   };
 
-  /** Microsoft Teams-specific options */
-  teams?: {
-    attachments?: unknown[];
-  };
-
-  /** Google Chat-specific options */
-  googleChat?: {
-    cards?: unknown[];
+  /** Telegram-specific options */
+  telegram?: {
+    parse_mode?: 'HTML' | 'MarkdownV2';
+    disable_web_page_preview?: boolean;
+    disable_notification?: boolean;
+    protect_content?: boolean;
+    reply_markup?: unknown;
   };
 }
 

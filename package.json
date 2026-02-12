@@ -7,8 +7,7 @@
     "bot",
     "discord",
     "slack",
-    "teams",
-    "google-chat",
+    "telegram",
     "sdk"
   ],
   "homepage": "https://github.com/Aarekaz/switchboard#readme",
@@ -34,6 +33,10 @@
     "./slack": {
       "types": "./dist/slack.d.ts",
       "import": "./dist/slack.js"
+    },
+    "./telegram": {
+      "types": "./dist/telegram.d.ts",
+      "import": "./dist/telegram.js"
     }
   },
   "files": [
@@ -58,7 +61,8 @@
   "dependencies": {
     "@aarekaz/switchboard-core": "workspace:*",
     "@aarekaz/switchboard-discord": "workspace:*",
-    "@aarekaz/switchboard-slack": "workspace:*"
+    "@aarekaz/switchboard-slack": "workspace:*",
+    "@aarekaz/switchboard-telegram": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^25.0.8",
