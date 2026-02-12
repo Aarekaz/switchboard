@@ -36,43 +36,55 @@ import '@aarekaz/switchboard/telegram';
 
 ```mermaid
 graph TB
-    subgraph "Your Code"
-        UC["Bot Logic<br/><i>onMessage, reply, react</i>"]
+    subgraph YourCode["Your Code"]
+        UC["Bot Logic"]
     end
 
-    subgraph "Switchboard Core"
-        BC["Bot Client<br/><i>createBot()</i>"]
+    subgraph Core["Switchboard Core"]
+        BC["Bot Client / createBot"]
         AR["Adapter Registry"]
     end
 
-    subgraph "Platform Adapters"
+    subgraph Adapters["Platform Adapters"]
         DA["Discord Adapter"]
         SA["Slack Adapter"]
         TA["Telegram Adapter"]
     end
 
-    subgraph "Platform SDKs"
+    subgraph SDKs["Platform SDKs"]
         DJS["discord.js"]
-        BOLT["@slack/bolt"]
+        BOLT["slack/bolt"]
         GRAM["grammY"]
     end
 
-    subgraph "Platform APIs"
+    subgraph APIs["Platform APIs"]
         DAPI["Discord API"]
         SAPI["Slack API"]
         TAPI["Telegram Bot API"]
     end
 
-    UC -->|"send, edit, react"| BC
+    UC -->|send, edit, react| BC
     BC --> AR
-    AR --> DA & SA & TA
-    DA --> DJS --> DAPI
-    SA --> BOLT --> SAPI
-    TA --> GRAM --> TAPI
+    AR --> DA
+    AR --> SA
+    AR --> TA
+    DA --> DJS
+    DJS --> DAPI
+    SA --> BOLT
+    BOLT --> SAPI
+    TA --> GRAM
+    GRAM --> TAPI
 
-    DAPI -.->|"events"| DJS -.->|"normalize"| DA -.-> BC -.->|"onMessage, onReaction"| UC
-    SAPI -.->|"events"| BOLT -.->|"normalize"| SA -.-> BC
-    TAPI -.->|"events"| GRAM -.->|"normalize"| TA -.-> BC
+    DAPI -.->|events| DJS
+    DJS -.->|normalize| DA
+    DA -.-> BC
+    SAPI -.->|events| BOLT
+    BOLT -.->|normalize| SA
+    SA -.-> BC
+    TAPI -.->|events| GRAM
+    GRAM -.->|normalize| TA
+    TA -.-> BC
+    BC -.->|onMessage, onReaction| UC
 ```
 
 **Solid arrows** = outbound (your bot sending messages, reactions, edits)
