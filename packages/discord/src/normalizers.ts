@@ -64,8 +64,8 @@ export function normalizeChannel(
   return {
     id: channel.id,
     name: channel.isDMBased() ? 'DM' : (channel as TextChannel).name,
-    type: channel.isDMBased() ? 'dm' : 'public',
-    platform: 'discord',
+    type: channel.isDMBased() ? 'dm' : 'text',
+    isPrivate: channel.isDMBased(),
   };
 }
 
@@ -78,7 +78,6 @@ export function normalizeUser(user: DiscordUser): User {
     username: user.username,
     displayName: user.displayName || user.username,
     isBot: user.bot || false,
-    platform: 'discord',
   };
 }
 
