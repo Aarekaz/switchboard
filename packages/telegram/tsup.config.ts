@@ -8,5 +8,5 @@ export default defineConfig({
   sourcemap: true,
   minify: false,
   treeshake: true,
-  external: ['@aarekaz/switchboard-core', 'grammy'],
+  external: ['@aarekaz/switchboard-core', 'grammy', 'lru-cache'],
 });

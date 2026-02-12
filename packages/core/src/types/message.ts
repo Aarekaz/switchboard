@@ -68,6 +68,8 @@ export interface UnifiedMessage {
  * - Discord: String IDs always work
  * - Slack: String IDs work if the message was seen by the bot in the last hour.
  *   For guaranteed reliability, pass the full message object.
+ * - Telegram: String IDs work if the message was seen by the bot in the last hour.
+ *   For guaranteed reliability, pass the full message object.
  *
  * @example
  * ```typescript
