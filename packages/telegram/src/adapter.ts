@@ -57,9 +57,9 @@ export class TelegramAdapter implements PlatformAdapter {
 
   constructor(config: TelegramConfig = {}) {
     this.config = {
-      cacheSize: config.cacheSize || 1000,
-      cacheTTL: config.cacheTTL || 1000 * 60 * 60, // 1 hour default
       ...config,
+      cacheSize: config.cacheSize ?? 1000,
+      cacheTTL: config.cacheTTL ?? 1000 * 60 * 60, // 1 hour default
     };
 
     this.messageCache = new LRUCache<string, MessageContext>({
@@ -113,6 +113,9 @@ export class TelegramAdapter implements PlatformAdapter {
           'message_reaction',
           'my_chat_member',
         ],
+      }).catch((error) => {
+        console.error('[Switchboard] Telegram polling error:', error);
+        this.connected = false;
       });
 
       this.connected = true;
@@ -572,8 +575,6 @@ export class TelegramAdapter implements PlatformAdapter {
   private cacheMessage(message: UnifiedMessage): void {
     this.messageCache.set(message.id, {
       chatId: message.channelId,
-      threadId: message.threadId,
-      timestamp: message.timestamp,
     });
   }
 

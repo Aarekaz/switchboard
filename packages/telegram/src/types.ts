@@ -45,8 +45,6 @@ export interface TelegramConfig {
  */
 export interface MessageContext {
   chatId: string;
-  threadId?: string;
-  timestamp: Date;
 }
 
 /**
