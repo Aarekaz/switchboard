@@ -167,28 +167,12 @@ export class TelegramAdapter implements PlatformAdapter {
         ?.telegram;
 
       const sendOptions: Record<string, unknown> = {};
-
-      // Handle thread/forum topic
-      if (options?.threadId) {
-        sendOptions.message_thread_id = Number(options.threadId);
-      }
-
-      // Handle Telegram-specific options
-      if (telegramOptions?.parse_mode) {
-        sendOptions.parse_mode = telegramOptions.parse_mode;
-      }
-      if (telegramOptions?.disable_web_page_preview) {
-        sendOptions.link_preview_options = { is_disabled: true };
-      }
-      if (telegramOptions?.disable_notification) {
-        sendOptions.disable_notification = true;
-      }
-      if (telegramOptions?.protect_content) {
-        sendOptions.protect_content = true;
-      }
-      if (telegramOptions?.reply_markup) {
-        sendOptions.reply_markup = telegramOptions.reply_markup;
-      }
+      if (options?.threadId) sendOptions.message_thread_id = Number(options.threadId);
+      if (telegramOptions?.parse_mode) sendOptions.parse_mode = telegramOptions.parse_mode;
+      if (telegramOptions?.disable_web_page_preview) sendOptions.link_preview_options = { is_disabled: true };
+      if (telegramOptions?.disable_notification) sendOptions.disable_notification = true;
+      if (telegramOptions?.protect_content) sendOptions.protect_content = true;
+      if (telegramOptions?.reply_markup) sendOptions.reply_markup = telegramOptions.reply_markup;
 
       const message = await this.bot.api.sendMessage(
         Number(channelId),
@@ -223,29 +207,29 @@ export class TelegramAdapter implements PlatformAdapter {
       return err(new ConnectionError('telegram', new Error('Not connected')));
     }
 
-    try {
-      const messageId =
-        typeof messageRef === 'string' ? messageRef : messageRef.id;
-      const channelId = this.resolveChannelId(messageRef);
+    const messageId =
+      typeof messageRef === 'string' ? messageRef : messageRef.id;
+    const channelId = this.resolveChannelId(messageRef);
 
-      if (!channelId) {
-        return err(
-          new MessageEditError(
-            'telegram',
-            messageId,
-            new Error(
-              'Cannot edit message: chat context not found.\n\n' +
-                'This happens when:\n' +
-                '1. The message is older than 1 hour (cache expired)\n' +
-                '2. The bot restarted since the message was sent\n\n' +
-                'Solution: Pass the full message object instead:\n' +
-                '  bot.editMessage(message, "text")  // Works reliably\n' +
-                '  bot.editMessage(message.id, "text")  // May fail on Telegram'
-            )
+    if (!channelId) {
+      return err(
+        new MessageEditError(
+          'telegram',
+          messageId,
+          new Error(
+            'Cannot edit message: chat context not found.\n\n' +
+              'This happens when:\n' +
+              '1. The message is older than 1 hour (cache expired)\n' +
+              '2. The bot restarted since the message was sent\n\n' +
+              'Solution: Pass the full message object instead:\n' +
+              '  bot.editMessage(message, "text")  // Works reliably\n' +
+              '  bot.editMessage(message.id, "text")  // May fail on Telegram'
           )
-        );
-      }
+        )
+      );
+    }
 
+    try {
       const result = await this.bot.api.editMessageText(
         Number(channelId),
         Number(messageId),
@@ -267,8 +251,6 @@ export class TelegramAdapter implements PlatformAdapter {
 
       return ok(normalizeMessage(result));
     } catch (error) {
-      const messageId =
-        typeof messageRef === 'string' ? messageRef : messageRef.id;
       return err(
         new MessageEditError(
           'telegram',
@@ -287,33 +269,31 @@ export class TelegramAdapter implements PlatformAdapter {
       return err(new ConnectionError('telegram', new Error('Not connected')));
     }
 
-    try {
-      const messageId =
-        typeof messageRef === 'string' ? messageRef : messageRef.id;
-      const channelId = this.resolveChannelId(messageRef);
+    const messageId =
+      typeof messageRef === 'string' ? messageRef : messageRef.id;
+    const channelId = this.resolveChannelId(messageRef);
 
-      if (!channelId) {
-        return err(
-          new MessageDeleteError(
-            'telegram',
-            messageId,
-            new Error(
-              'Cannot delete message: chat context not found.\n\n' +
-                'Solution: Pass the full message object instead:\n' +
-                '  bot.deleteMessage(message)  // Works reliably\n' +
-                '  bot.deleteMessage(message.id)  // May fail on Telegram'
-            )
+    if (!channelId) {
+      return err(
+        new MessageDeleteError(
+          'telegram',
+          messageId,
+          new Error(
+            'Cannot delete message: chat context not found.\n\n' +
+              'Solution: Pass the full message object instead:\n' +
+              '  bot.deleteMessage(message)  // Works reliably\n' +
+              '  bot.deleteMessage(message.id)  // May fail on Telegram'
           )
-        );
-      }
+        )
+      );
+    }
 
+    try {
       await this.bot.api.deleteMessage(Number(channelId), Number(messageId));
       this.messageCache.delete(messageId);
 
       return ok(undefined);
     } catch (error) {
-      const messageId =
-        typeof messageRef === 'string' ? messageRef : messageRef.id;
       return err(
         new MessageDeleteError(
           'telegram',
@@ -335,27 +315,27 @@ export class TelegramAdapter implements PlatformAdapter {
       return err(new ConnectionError('telegram', new Error('Not connected')));
     }
 
-    try {
-      const messageId =
-        typeof messageRef === 'string' ? messageRef : messageRef.id;
-      const channelId = this.resolveChannelId(messageRef);
+    const messageId =
+      typeof messageRef === 'string' ? messageRef : messageRef.id;
+    const channelId = this.resolveChannelId(messageRef);
 
-      if (!channelId) {
-        return err(
-          new ReactionError(
-            'telegram',
-            messageId,
-            emoji,
-            new Error(
-              'Cannot add reaction: chat context not found.\n\n' +
-                'Solution: Pass the full message object instead:\n' +
-                '  bot.addReaction(message, emoji)  // Works reliably\n' +
-                '  bot.addReaction(message.id, emoji)  // May fail on Telegram'
-            )
+    if (!channelId) {
+      return err(
+        new ReactionError(
+          'telegram',
+          messageId,
+          emoji,
+          new Error(
+            'Cannot add reaction: chat context not found.\n\n' +
+              'Solution: Pass the full message object instead:\n' +
+              '  bot.addReaction(message, emoji)  // Works reliably\n' +
+              '  bot.addReaction(message.id, emoji)  // May fail on Telegram'
           )
-        );
-      }
+        )
+      );
+    }
 
+    try {
       await this.bot.api.setMessageReaction(
         Number(channelId),
         Number(messageId),
@@ -364,8 +344,6 @@ export class TelegramAdapter implements PlatformAdapter {
 
       return ok(undefined);
     } catch (error) {
-      const messageId =
-        typeof messageRef === 'string' ? messageRef : messageRef.id;
       return err(
         new ReactionError(
           'telegram',
@@ -394,25 +372,25 @@ export class TelegramAdapter implements PlatformAdapter {
       return err(new ConnectionError('telegram', new Error('Not connected')));
     }
 
-    try {
-      const messageId =
-        typeof messageRef === 'string' ? messageRef : messageRef.id;
-      const channelId = this.resolveChannelId(messageRef);
+    const messageId =
+      typeof messageRef === 'string' ? messageRef : messageRef.id;
+    const channelId = this.resolveChannelId(messageRef);
 
-      if (!channelId) {
-        return err(
-          new ReactionError(
-            'telegram',
-            messageId,
-            emoji,
-            new Error(
-              'Cannot remove reaction: chat context not found.\n\n' +
-                'Solution: Pass the full message object instead.'
-            )
+    if (!channelId) {
+      return err(
+        new ReactionError(
+          'telegram',
+          messageId,
+          emoji,
+          new Error(
+            'Cannot remove reaction: chat context not found.\n\n' +
+              'Solution: Pass the full message object instead.'
           )
-        );
-      }
+        )
+      );
+    }
 
+    try {
       // Set empty array to clear all bot reactions
       await this.bot.api.setMessageReaction(
         Number(channelId),
@@ -422,8 +400,6 @@ export class TelegramAdapter implements PlatformAdapter {
 
       return ok(undefined);
     } catch (error) {
-      const messageId =
-        typeof messageRef === 'string' ? messageRef : messageRef.id;
       return err(
         new ReactionError(
           'telegram',
@@ -447,26 +423,26 @@ export class TelegramAdapter implements PlatformAdapter {
       return err(new ConnectionError('telegram', new Error('Not connected')));
     }
 
-    try {
-      const messageId =
-        typeof messageRef === 'string' ? messageRef : messageRef.id;
-      const channelId = this.resolveChannelId(messageRef);
+    const messageId =
+      typeof messageRef === 'string' ? messageRef : messageRef.id;
+    const channelId = this.resolveChannelId(messageRef);
 
-      if (!channelId) {
-        return err(
-          new MessageSendError(
-            'telegram',
-            'unknown',
-            new Error(
-              'Cannot create thread: chat context not found.\n\n' +
-                'Solution: Pass the full message object instead:\n' +
-                '  bot.createThread(message, text)  // Works reliably\n' +
-                '  bot.createThread(message.id, text)  // May fail on Telegram'
-            )
+    if (!channelId) {
+      return err(
+        new MessageSendError(
+          'telegram',
+          'unknown',
+          new Error(
+            'Cannot create thread: chat context not found.\n\n' +
+              'Solution: Pass the full message object instead:\n' +
+              '  bot.createThread(message, text)  // Works reliably\n' +
+              '  bot.createThread(message.id, text)  // May fail on Telegram'
           )
-        );
-      }
+        )
+      );
+    }
 
+    try {
       const message = await this.bot.api.sendMessage(Number(channelId), text, {
         reply_parameters: { message_id: Number(messageId) },
       });
@@ -476,8 +452,6 @@ export class TelegramAdapter implements PlatformAdapter {
 
       return ok(unifiedMessage);
     } catch (error) {
-      const channelId =
-        typeof messageRef === 'string' ? 'unknown' : messageRef.channelId;
       return err(
         new MessageSendError(
           'telegram',

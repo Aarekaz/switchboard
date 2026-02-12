@@ -108,9 +108,6 @@ export function normalizeChat(chat: ChatFullInfo): Channel {
       isPrivate = true;
       break;
     case 'supergroup':
-      type = 'text';
-      isPrivate = false;
-      break;
     case 'channel':
       type = 'text';
       isPrivate = false;
@@ -121,13 +118,10 @@ export function normalizeChat(chat: ChatFullInfo): Channel {
   }
 
   const name =
-    'title' in chat && chat.title
-      ? chat.title
-      : 'username' in chat && chat.username
-        ? chat.username
-        : 'first_name' in chat && chat.first_name
-          ? chat.first_name
-          : `Chat ${chat.id}`;
+    ('title' in chat && chat.title) ||
+    ('username' in chat && chat.username) ||
+    ('first_name' in chat && chat.first_name) ||
+    `Chat ${chat.id}`;
 
   return {
     id: String(chat.id),
