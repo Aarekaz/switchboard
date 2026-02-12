@@ -33,6 +33,7 @@ import {
   normalizeChannel,
   normalizeUser,
   normalizeMessageEvent,
+  normalizeMessageEditedEvent,
   normalizeReactionEvent,
   toDiscordEmoji,
 } from './normalizers.js';
@@ -526,8 +527,9 @@ export class DiscordAdapter implements PlatformAdapter {
   /**
    * Register an event handler
    */
-  onEvent(handler: (event: UnifiedEvent) => void): void {
+  onEvent(handler: (event: UnifiedEvent) => void): () => void {
     this.eventHandlers.add(handler);
+    return () => { this.eventHandlers.delete(handler); };
   }
 
   /**
@@ -675,6 +677,28 @@ export class DiscordAdapter implements PlatformAdapter {
       if (user.bot) return;
 
       const event = normalizeReactionEvent(reaction, user, 'removed');
+      this.emitEvent(event);
+    });
+
+    // Message edit events
+    this.client.on('messageUpdate', async (_oldMessage, newMessage) => {
+      // Only handle real edits (not embed updates)
+      if (!newMessage.editedTimestamp) return;
+
+      // Handle partial messages
+      if (newMessage.partial) {
+        try {
+          await newMessage.fetch();
+        } catch (error) {
+          console.error('Failed to fetch updated message:', error);
+          return;
+        }
+      }
+
+      // Ignore bot messages
+      if (newMessage.author?.bot) return;
+
+      const event = normalizeMessageEditedEvent(newMessage as Message);
       this.emitEvent(event);
     });
 

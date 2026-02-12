@@ -7,7 +7,7 @@ import type {
   SendMessageOptions,
   UploadOptions,
 } from '../types/message.js';
-import type { UnifiedEvent, ReactionEvent } from '../types/event.js';
+import type { UnifiedEvent, ReactionEvent, MessageEditedEvent } from '../types/event.js';
 import type { Channel } from '../types/channel.js';
 import type { User } from '../types/user.js';
 import type { MessageContext, MessageHandler } from '../types/context.js';
@@ -172,8 +172,8 @@ export class Bot {
    * });
    * ```
    */
-  onMessage(handler: MessageHandler | ((message: UnifiedMessage) => void | Promise<void>)): void {
-    this.on('message', async (event) => {
+  onMessage(handler: MessageHandler | ((message: UnifiedMessage) => void | Promise<void>)): () => void {
+    return this.on('message', async (event) => {
       if (event.type === 'message') {
         const message = event.message;
 
@@ -237,9 +237,20 @@ export class Bot {
   /**
    * Register a handler for reaction events
    */
-  onReaction(handler: (event: ReactionEvent) => void | Promise<void>): void {
-    this.on('reaction', async (event) => {
+  onReaction(handler: (event: ReactionEvent) => void | Promise<void>): () => void {
+    return this.on('reaction', async (event) => {
       if (event.type === 'reaction') {
+        await handler(event);
+      }
+    });
+  }
+
+  /**
+   * Register a handler for message edited events
+   */
+  onMessageEdited(handler: (event: MessageEditedEvent) => void | Promise<void>): () => void {
+    return this.on('message_edited', async (event) => {
+      if (event.type === 'message_edited') {
         await handler(event);
       }
     });
@@ -248,8 +259,8 @@ export class Bot {
   /**
    * Register a handler for any event
    */
-  onEvent(handler: (event: UnifiedEvent) => void | Promise<void>): void {
-    this.on('*', handler);
+  onEvent(handler: (event: UnifiedEvent) => void | Promise<void>): () => void {
+    return this.on('*', handler);
   }
 
   /**
@@ -265,11 +276,12 @@ export class Bot {
   private on(
     eventType: string,
     handler: (event: UnifiedEvent) => void | Promise<void>
-  ): void {
+  ): () => void {
     if (!this.eventHandlers.has(eventType)) {
       this.eventHandlers.set(eventType, new Set());
     }
     this.eventHandlers.get(eventType)!.add(handler);
+    return () => { this.eventHandlers.get(eventType)?.delete(handler); };
   }
 
   /**

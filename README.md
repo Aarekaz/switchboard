@@ -1,8 +1,8 @@
-# Switchboard (v0.3.3)
+# Switchboard (v0.3.5)
 
 **Build chat bots once, deploy everywhere.**
 
-Switchboard is a universal SDK for chat platforms that enables developers to build bots once and deploy them seamlessly across Slack, Teams, Discord, and Google Chat.
+Switchboard is a universal SDK for chat platforms that enables developers to build bots once and deploy them seamlessly across Discord, Slack, and Telegram.
 
 <img width="1176" height="1042" alt="carbon" src="https://github.com/user-attachments/assets/415332a5-b66a-4522-a816-d096c6b64aa6" />
 
@@ -28,9 +28,59 @@ Swap platforms by changing one line:
 
 ```ts
 import '@aarekaz/switchboard/slack';
+// or
+import '@aarekaz/switchboard/telegram';
 ```
 
-## Design Philosophy that I am drilling in this SDK
+## Architecture
+
+```mermaid
+graph TB
+    subgraph "Your Code"
+        UC["Bot Logic<br/><i>onMessage, reply, react</i>"]
+    end
+
+    subgraph "Switchboard Core"
+        BC["Bot Client<br/><i>createBot()</i>"]
+        AR["Adapter Registry"]
+    end
+
+    subgraph "Platform Adapters"
+        DA["Discord Adapter"]
+        SA["Slack Adapter"]
+        TA["Telegram Adapter"]
+    end
+
+    subgraph "Platform SDKs"
+        DJS["discord.js"]
+        BOLT["@slack/bolt"]
+        GRAM["grammY"]
+    end
+
+    subgraph "Platform APIs"
+        DAPI["Discord API"]
+        SAPI["Slack API"]
+        TAPI["Telegram Bot API"]
+    end
+
+    UC -->|"send, edit, react"| BC
+    BC --> AR
+    AR --> DA & SA & TA
+    DA --> DJS --> DAPI
+    SA --> BOLT --> SAPI
+    TA --> GRAM --> TAPI
+
+    DAPI -.->|"events"| DJS -.->|"normalize"| DA -.-> BC -.->|"onMessage, onReaction"| UC
+    SAPI -.->|"events"| BOLT -.->|"normalize"| SA -.-> BC
+    TAPI -.->|"events"| GRAM -.->|"normalize"| TA -.-> BC
+```
+
+**Solid arrows** = outbound (your bot sending messages, reactions, edits)
+**Dashed arrows** = inbound (platform events flowing up to your handlers)
+
+The **One Line Swap** works because your code only talks to the Bot Client. Changing `import '@aarekaz/switchboard/discord'` to `import '@aarekaz/switchboard/telegram'` swaps the entire adapter layer underneath — your bot logic stays identical.
+
+## Design Philosophy
 
 **"Pit of Success"** - Make the right thing the easiest thing.
 
@@ -38,4 +88,3 @@ import '@aarekaz/switchboard/slack';
 2. **One Line Swap** - Switching platforms should require changing exactly one line
 3. **Progressive Disclosure** - Start simple (90% use cases), add power when needed (10% use cases)
 4. **Type Safety as a Feature** - Full TypeScript support without manual type annotations
-

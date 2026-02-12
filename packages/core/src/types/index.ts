@@ -18,6 +18,7 @@ export type {
 export type {
   UnifiedEvent,
   MessageEvent,
+  MessageEditedEvent,
   ReactionEvent,
   UserJoinedEvent,
   UserLeftEvent,

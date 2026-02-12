@@ -9,6 +9,7 @@ import type {
   ChannelType,
   User,
   MessageEvent,
+  MessageEditedEvent,
   ReactionEvent,
 } from '@aarekaz/switchboard-core';
 import type { ChatFullInfo, Message, User as TelegramUser } from 'grammy/types';
@@ -168,9 +169,24 @@ export function normalizeReactionEvent(
 ): ReactionEvent {
   return {
     type: 'reaction',
+    channelId: String(chatId),
     messageId: String(messageId),
     userId: String(userId),
     emoji,
     action,
+  };
+}
+
+/**
+ * Normalize a Telegram edited message to MessageEditedEvent
+ * Telegram provides edit_date as a Unix timestamp (seconds)
+ */
+export function normalizeMessageEditedEvent(message: Message): MessageEditedEvent {
+  return {
+    type: 'message_edited',
+    message: normalizeMessage(message),
+    editedAt: message.edit_date
+      ? new Date(message.edit_date * 1000)
+      : new Date(),
   };
 }

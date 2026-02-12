@@ -8,6 +8,7 @@ import type {
   Channel,
   User,
   MessageEvent,
+  MessageEditedEvent,
   ReactionEvent,
 } from '@aarekaz/switchboard-core';
 import type {
@@ -104,10 +105,22 @@ export function normalizeReactionEvent(
 
   return {
     type: 'reaction',
+    channelId: reaction.message.channelId,
     messageId: reaction.message.id,
     userId: user.id,
     emoji,
     action,
+  };
+}
+
+/**
+ * Normalizes a Discord message update to MessageEditedEvent
+ */
+export function normalizeMessageEditedEvent(message: Message): MessageEditedEvent {
+  return {
+    type: 'message_edited',
+    message: normalizeMessage(message),
+    editedAt: message.editedAt || new Date(),
   };
 }
 

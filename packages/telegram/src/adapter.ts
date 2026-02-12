@@ -31,6 +31,7 @@ import {
   normalizeChat,
   normalizeUser,
   normalizeMessageEvent,
+  normalizeMessageEditedEvent,
   normalizeReactionEvent,
 } from './normalizers.js';
 import type {
@@ -110,6 +111,7 @@ export class TelegramAdapter implements PlatformAdapter {
       this.bot.start({
         allowed_updates: (this.config.allowedUpdates as any) || [
           'message',
+          'edited_message',
           'message_reaction',
           'my_chat_member',
         ],
@@ -489,8 +491,9 @@ export class TelegramAdapter implements PlatformAdapter {
   /**
    * Subscribe to platform events
    */
-  onEvent(handler: (event: UnifiedEvent) => void | Promise<void>): void {
+  onEvent(handler: (event: UnifiedEvent) => void | Promise<void>): () => void {
     this.eventHandlers.add(handler);
+    return () => { this.eventHandlers.delete(handler); };
   }
 
   /**
@@ -615,6 +618,18 @@ export class TelegramAdapter implements PlatformAdapter {
         type: 'message',
         message: unifiedMessage,
       };
+      this.emitEvent(event);
+    });
+
+    // Edited message events
+    this.bot.on('edited_message', (ctx) => {
+      // Skip bot's own edited messages
+      if (ctx.editedMessage?.from?.is_bot) return;
+
+      const message = ctx.editedMessage;
+      if (!message) return;
+
+      const event = normalizeMessageEditedEvent(message);
       this.emitEvent(event);
     });
 
