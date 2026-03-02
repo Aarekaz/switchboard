@@ -17,14 +17,15 @@ import type { MessageContext, MessageHandler } from '../types/context.js';
  */
 export class Bot {
   private eventHandlers: Map<string, Set<(event: UnifiedEvent) => void | Promise<void>>> = new Map();
+  private unsubscribeAdapter: (() => void) | null = null;
 
   constructor(
     private readonly adapter: PlatformAdapter,
     private readonly _platform: PlatformType,
     private readonly credentials: unknown
   ) {
-    // Subscribe to all events from the adapter
-    this.adapter.onEvent(async (event) => {
+    // Subscribe to all events from the adapter and store unsubscribe handle
+    this.unsubscribeAdapter = this.adapter.onEvent(async (event) => {
       await this.handleEvent(event);
     });
   }
@@ -50,6 +51,8 @@ export class Bot {
    * Stop the bot (disconnect from the platform)
    */
   async stop(): Promise<void> {
+    this.unsubscribeAdapter?.();
+    this.unsubscribeAdapter = null;
     await this.adapter.disconnect();
   }
 

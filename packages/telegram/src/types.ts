@@ -2,6 +2,11 @@
  * Telegram-specific types and interfaces
  */
 
+import type { Update } from 'grammy/types';
+
+/** Valid update type names for grammy's allowed_updates config */
+export type TelegramUpdateType = Exclude<keyof Update, 'update_id'>;
+
 /**
  * Telegram credentials for authentication
  */
@@ -34,9 +39,9 @@ export interface TelegramConfig {
 
   /**
    * Allowed updates to receive
-   * @default ['message', 'message_reaction', 'my_chat_member']
+   * @default ['message', 'edited_message', 'message_reaction', 'my_chat_member']
    */
-  allowedUpdates?: string[];
+  allowedUpdates?: TelegramUpdateType[];
 }
 
 /**

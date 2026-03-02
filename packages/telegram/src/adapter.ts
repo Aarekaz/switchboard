@@ -5,6 +5,7 @@
  */
 
 import { Bot as GrammyBot } from 'grammy';
+import type { Message, ReactionTypeEmoji } from 'grammy/types';
 import { LRUCache } from 'lru-cache';
 import type {
   PlatformAdapter,
@@ -109,7 +110,7 @@ export class TelegramAdapter implements PlatformAdapter {
 
       // Start long polling (non-blocking — this promise never resolves)
       this.bot.start({
-        allowed_updates: (this.config.allowedUpdates as any) || [
+        allowed_updates: this.config.allowedUpdates || [
           'message',
           'edited_message',
           'message_reaction',
@@ -179,10 +180,11 @@ export class TelegramAdapter implements PlatformAdapter {
       if (telegramOptions?.protect_content) sendOptions.protect_content = true;
       if (telegramOptions?.reply_markup) sendOptions.reply_markup = telegramOptions.reply_markup;
 
+      // Cast needed: grammy's Other<> generic type is impractical to construct manually
       const message = await this.bot.api.sendMessage(
         Number(channelId),
         text,
-        sendOptions as any
+        sendOptions as Parameters<GrammyBot['api']['sendMessage']>[2]
       );
 
       const unifiedMessage = normalizeMessage(message);
@@ -341,10 +343,12 @@ export class TelegramAdapter implements PlatformAdapter {
     }
 
     try {
+      // Cast needed: grammy expects a specific 70+ emoji union type,
+      // but Switchboard's unified API passes a generic string
       await this.bot.api.setMessageReaction(
         Number(channelId),
         Number(messageId),
-        [{ type: 'emoji', emoji: emoji as any }]
+        [{ type: 'emoji', emoji: emoji as ReactionTypeEmoji['emoji'] }]
       );
 
       return ok(undefined);
@@ -396,7 +400,12 @@ export class TelegramAdapter implements PlatformAdapter {
     }
 
     try {
-      // Set empty array to clear all bot reactions
+      // Telegram API limitation: can only clear ALL bot reactions, not a specific one.
+      // setMessageReaction with empty array removes everything.
+      console.warn(
+        `[Switchboard] Telegram removeReaction: removing ALL bot reactions, ` +
+          `not just "${emoji}". This is a Telegram API limitation.`
+      );
       await this.bot.api.setMessageReaction(
         Number(channelId),
         Number(messageId),
@@ -545,16 +554,16 @@ export class TelegramAdapter implements PlatformAdapter {
    * Normalize platform message to UnifiedMessage
    */
   normalizeMessage(platformMessage: unknown): UnifiedMessage {
-    return normalizeMessage(platformMessage as any);
+    return normalizeMessage(platformMessage as Message);
   }
 
   /**
    * Normalize platform event to UnifiedEvent
    */
   normalizeEvent(platformEvent: unknown): UnifiedEvent | null {
-    const event = platformEvent as any;
+    const event = platformEvent as Record<string, unknown>;
     if (event.message) {
-      return normalizeMessageEvent(event.message);
+      return normalizeMessageEvent(event.message as Message);
     }
     return null;
   }
@@ -588,14 +597,22 @@ export class TelegramAdapter implements PlatformAdapter {
     if (this.knownChats.has(chatId)) return;
     if (!this.bot) return;
 
-    // Fire and forget — best effort tracking
+    // Set placeholder to prevent duplicate API calls from concurrent messages
+    this.knownChats.set(chatId, {
+      id: chatId,
+      name: `Chat ${chatId}`,
+      type: 'unknown',
+      isPrivate: false,
+    });
+
+    // Fire and forget — replace placeholder with full chat info
     this.bot.api
       .getChat(Number(chatId))
       .then((chat) => {
         this.knownChats.set(chatId, normalizeChat(chat));
       })
       .catch(() => {
-        // Silently fail
+        // Keep the placeholder rather than removing — the chat exists
       });
   }
 

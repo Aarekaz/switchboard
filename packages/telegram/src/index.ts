@@ -14,4 +14,5 @@ export type {
   TelegramCredentials,
   TelegramConfig,
   TelegramMessageOptions,
+  TelegramUpdateType,
 } from './types.js';
