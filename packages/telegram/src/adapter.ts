@@ -582,9 +582,16 @@ export class TelegramAdapter implements PlatformAdapter {
   }
 
   /**
-   * Cache a message's context for later operations
+   * Cache a message's context for later operations.
+   * On collision (same message ID from different chats), removes the entry
+   * so resolveChannelId returns null rather than silently targeting the wrong chat.
    */
   private cacheMessage(message: UnifiedMessage): void {
+    const existing = this.messageCache.get(message.id);
+    if (existing && existing.chatId !== message.channelId) {
+      this.messageCache.delete(message.id);
+      return;
+    }
     this.messageCache.set(message.id, {
       chatId: message.channelId,
     });
@@ -658,42 +665,43 @@ export class TelegramAdapter implements PlatformAdapter {
       const userId = update.user?.id;
       if (!userId) return;
 
-      // Process added reactions
-      if (update.new_reaction) {
-        for (const reaction of update.new_reaction) {
-          if (reaction.type === 'emoji') {
-            const event = normalizeReactionEvent(
+      // Build sets for diffing (Telegram sends complete reaction lists, not deltas)
+      const oldEmojis = new Set<string>();
+      for (const r of update.old_reaction || []) {
+        if (r.type === 'emoji') oldEmojis.add(r.emoji);
+      }
+      const newEmojis = new Set<string>();
+      for (const r of update.new_reaction || []) {
+        if (r.type === 'emoji') newEmojis.add(r.emoji);
+      }
+
+      // Process added reactions (in new_reaction but not in old_reaction)
+      for (const emoji of newEmojis) {
+        if (!oldEmojis.has(emoji)) {
+          this.emitEvent(
+            normalizeReactionEvent(
               update.chat.id,
               update.message_id,
               userId,
-              reaction.emoji,
+              emoji,
               'added'
-            );
-            this.emitEvent(event);
-          }
+            )
+          );
         }
       }
 
       // Process removed reactions (in old_reaction but not in new_reaction)
-      if (update.old_reaction) {
-        const newEmojis = new Set<string>();
-        for (const r of update.new_reaction || []) {
-          if (r.type === 'emoji') {
-            newEmojis.add(r.emoji);
-          }
-        }
-
-        for (const reaction of update.old_reaction) {
-          if (reaction.type === 'emoji' && !newEmojis.has(reaction.emoji)) {
-            const event = normalizeReactionEvent(
+      for (const emoji of oldEmojis) {
+        if (!newEmojis.has(emoji)) {
+          this.emitEvent(
+            normalizeReactionEvent(
               update.chat.id,
               update.message_id,
               userId,
-              reaction.emoji,
+              emoji,
               'removed'
-            );
-            this.emitEvent(event);
-          }
+            )
+          );
         }
       }
     });

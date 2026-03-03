@@ -24,10 +24,7 @@ export class Bot {
     private readonly _platform: PlatformType,
     private readonly credentials: unknown
   ) {
-    // Subscribe to all events from the adapter and store unsubscribe handle
-    this.unsubscribeAdapter = this.adapter.onEvent(async (event) => {
-      await this.handleEvent(event);
-    });
+    this.subscribeToAdapter();
   }
 
   /**
@@ -41,6 +38,11 @@ export class Bot {
    * Start the bot (connect to the platform)
    */
   async start(): Promise<void> {
+    // Re-subscribe if we previously unsubscribed via stop()
+    if (!this.unsubscribeAdapter) {
+      this.subscribeToAdapter();
+    }
+
     // Connect to the platform if not already connected
     if (!this.adapter.isConnected()) {
       await this.adapter.connect(this.credentials);
@@ -285,6 +287,15 @@ export class Bot {
     }
     this.eventHandlers.get(eventType)!.add(handler);
     return () => { this.eventHandlers.get(eventType)?.delete(handler); };
+  }
+
+  /**
+   * Internal: Subscribe to adapter events and store the unsubscribe handle
+   */
+  private subscribeToAdapter(): void {
+    this.unsubscribeAdapter = this.adapter.onEvent(async (event) => {
+      await this.handleEvent(event);
+    });
   }
 
   /**
