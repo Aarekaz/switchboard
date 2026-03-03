@@ -69,8 +69,8 @@ export interface PlatformAdapter {
   ): Promise<Result<UnifiedMessage>>;
 
   // Event subscription
-  /** Subscribe to platform events */
-  onEvent(handler: (event: UnifiedEvent) => void | Promise<void>): void;
+  /** Subscribe to platform events. Returns an unsubscribe function. */
+  onEvent(handler: (event: UnifiedEvent) => void | Promise<void>): () => void;
 
   // Info retrieval
   /** Get list of channels */

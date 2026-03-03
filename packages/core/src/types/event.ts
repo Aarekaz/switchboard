@@ -13,6 +13,8 @@ export interface MessageEvent {
  */
 export interface ReactionEvent {
   type: 'reaction';
+  /** Channel ID where the reaction occurred */
+  channelId: string;
   /** Message ID that was reacted to */
   messageId: string;
   /** User ID who added/removed the reaction */
@@ -21,6 +23,17 @@ export interface ReactionEvent {
   emoji: string;
   /** Whether the reaction was added or removed */
   action: 'added' | 'removed';
+}
+
+/**
+ * Event fired when a message is edited
+ */
+export interface MessageEditedEvent {
+  type: 'message_edited';
+  /** The message after editing */
+  message: UnifiedMessage;
+  /** When the message was edited */
+  editedAt: Date;
 }
 
 /**
@@ -70,6 +83,7 @@ export interface ChannelDeletedEvent {
  */
 export type UnifiedEvent =
   | MessageEvent
+  | MessageEditedEvent
   | ReactionEvent
   | UserJoinedEvent
   | UserLeftEvent

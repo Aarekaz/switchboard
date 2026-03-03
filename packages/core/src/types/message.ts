@@ -68,6 +68,8 @@ export interface UnifiedMessage {
  * - Discord: String IDs always work
  * - Slack: String IDs work if the message was seen by the bot in the last hour.
  *   For guaranteed reliability, pass the full message object.
+ * - Telegram: String IDs work if the message was seen by the bot in the last hour.
+ *   For guaranteed reliability, pass the full message object.
  *
  * @example
  * ```typescript
@@ -104,14 +106,13 @@ export interface SendMessageOptions {
     unfurl_media?: boolean;
   };
 
-  /** Microsoft Teams-specific options */
-  teams?: {
-    attachments?: unknown[];
-  };
-
-  /** Google Chat-specific options */
-  googleChat?: {
-    cards?: unknown[];
+  /** Telegram-specific options */
+  telegram?: {
+    parse_mode?: 'HTML' | 'MarkdownV2';
+    disable_web_page_preview?: boolean;
+    disable_notification?: boolean;
+    protect_content?: boolean;
+    reply_markup?: unknown;
   };
 }
 

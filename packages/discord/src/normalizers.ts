@@ -8,6 +8,7 @@ import type {
   Channel,
   User,
   MessageEvent,
+  MessageEditedEvent,
   ReactionEvent,
 } from '@aarekaz/switchboard-core';
 import type {
@@ -63,8 +64,8 @@ export function normalizeChannel(
   return {
     id: channel.id,
     name: channel.isDMBased() ? 'DM' : (channel as TextChannel).name,
-    type: channel.isDMBased() ? 'dm' : 'public',
-    platform: 'discord',
+    type: channel.isDMBased() ? 'dm' : 'text',
+    isPrivate: channel.isDMBased(),
   };
 }
 
@@ -77,7 +78,6 @@ export function normalizeUser(user: DiscordUser): User {
     username: user.username,
     displayName: user.displayName || user.username,
     isBot: user.bot || false,
-    platform: 'discord',
   };
 }
 
@@ -104,10 +104,22 @@ export function normalizeReactionEvent(
 
   return {
     type: 'reaction',
+    channelId: reaction.message.channelId,
     messageId: reaction.message.id,
     userId: user.id,
     emoji,
     action,
+  };
+}
+
+/**
+ * Normalizes a Discord message update to MessageEditedEvent
+ */
+export function normalizeMessageEditedEvent(message: Message): MessageEditedEvent {
+  return {
+    type: 'message_edited',
+    message: normalizeMessage(message),
+    editedAt: message.editedAt || new Date(),
   };
 }
 

@@ -13,7 +13,8 @@
     "paths": {
       "@aarekaz/switchboard-core": ["packages/core/src/index.ts"],
       "@aarekaz/switchboard-discord": ["packages/discord/src/index.ts"],
-      "@aarekaz/switchboard-slack": ["packages/slack/src/index.ts"]
+      "@aarekaz/switchboard-slack": ["packages/slack/src/index.ts"],
+      "@aarekaz/switchboard-telegram": ["packages/telegram/src/index.ts"]
     },
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,

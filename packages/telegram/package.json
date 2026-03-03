@@ -1,0 +1,51 @@
+{
+  "name": "@aarekaz/switchboard-telegram",
+  "version": "0.3.5",
+  "description": "Telegram adapter for Switchboard SDK",
+  "keywords": [
+    "switchboard",
+    "telegram",
+    "bot",
+    "adapter"
+  ],
+  "homepage": "https://github.com/Aarekaz/switchboard#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aarekaz/switchboard.git",
+    "directory": "packages/telegram"
+  },
+  "license": "MIT",
+  "author": "Aarekaz",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@aarekaz/switchboard-core": "workspace:*",
+    "grammy": "^1.40.0",
+    "lru-cache": "^11.2.4"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

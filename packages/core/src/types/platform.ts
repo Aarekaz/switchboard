@@ -5,6 +5,5 @@
 export type PlatformType =
   | 'discord'
   | 'slack'
-  | 'teams'
-  | 'google-chat'
+  | 'telegram'
   | (string & { __brand?: 'PlatformType' });

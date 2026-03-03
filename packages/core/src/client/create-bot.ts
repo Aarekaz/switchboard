@@ -9,7 +9,7 @@ import { AdapterNotFoundError } from '../utils/errors.js';
  */
 export interface BotConfig {
   /**
-   * Platform to connect to (e.g., 'discord', 'slack', 'teams', 'google-chat')
+   * Platform to connect to (e.g., 'discord', 'slack', 'telegram')
    */
   platform: PlatformType;
 
@@ -17,12 +17,8 @@ export interface BotConfig {
    * Platform credentials (structure depends on the platform)
    */
   credentials?: {
-    /** Bot token (Discord, Slack) */
+    /** Bot token (Discord, Slack, Telegram) */
     token?: string;
-    /** App ID (Teams) */
-    appId?: string;
-    /** App password (Teams) */
-    appPassword?: string;
     /** Custom credentials object */
     [key: string]: unknown;
   };
@@ -39,8 +35,7 @@ export interface BotConfig {
   platformConfig?: {
     discord?: unknown;
     slack?: unknown;
-    teams?: unknown;
-    googleChat?: unknown;
+    telegram?: unknown;
     [key: string]: unknown;
   };
 }

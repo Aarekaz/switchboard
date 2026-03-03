@@ -30,6 +30,7 @@ import {
 import {
   normalizeMessage,
   normalizeMessageEvent,
+  normalizeMessageEditedEvent,
   normalizeReactionEvent,
   toSlackEmoji,
 } from './normalizers.js';
@@ -615,8 +616,9 @@ export class SlackAdapter implements PlatformAdapter {
   /**
    * Subscribe to platform events
    */
-  onEvent(handler: (event: UnifiedEvent) => void | Promise<void>): void {
+  onEvent(handler: (event: UnifiedEvent) => void | Promise<void>): () => void {
     this.eventHandlers.add(handler);
+    return () => { this.eventHandlers.delete(handler); };
   }
 
   /**
@@ -752,7 +754,23 @@ export class SlackAdapter implements PlatformAdapter {
 
     // Message events
     this.app.message(async ({ message }: { message: any }) => {
-      // Filter out bot messages and message changes to avoid loops
+      // Handle message edits (subtype: message_changed)
+      if (message.subtype === 'message_changed' && message.message) {
+        // Skip bot edits
+        if (message.message.bot_id) return;
+
+        const editedEvent = normalizeMessageEditedEvent(message);
+        this.eventHandlers.forEach((handler) => {
+          try {
+            handler(editedEvent);
+          } catch (error) {
+            console.error('[Switchboard] Error in message_edited handler:', error);
+          }
+        });
+        return;
+      }
+
+      // Filter out other subtypes (bot_message, etc.) to avoid loops
       if ('subtype' in message && message.subtype !== undefined) {
         return;
       }

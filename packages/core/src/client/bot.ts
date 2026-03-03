@@ -7,7 +7,7 @@ import type {
   SendMessageOptions,
   UploadOptions,
 } from '../types/message.js';
-import type { UnifiedEvent, ReactionEvent } from '../types/event.js';
+import type { UnifiedEvent, ReactionEvent, MessageEditedEvent } from '../types/event.js';
 import type { Channel } from '../types/channel.js';
 import type { User } from '../types/user.js';
 import type { MessageContext, MessageHandler } from '../types/context.js';
@@ -17,16 +17,14 @@ import type { MessageContext, MessageHandler } from '../types/context.js';
  */
 export class Bot {
   private eventHandlers: Map<string, Set<(event: UnifiedEvent) => void | Promise<void>>> = new Map();
+  private unsubscribeAdapter: (() => void) | null = null;
 
   constructor(
     private readonly adapter: PlatformAdapter,
     private readonly _platform: PlatformType,
     private readonly credentials: unknown
   ) {
-    // Subscribe to all events from the adapter
-    this.adapter.onEvent(async (event) => {
-      await this.handleEvent(event);
-    });
+    this.subscribeToAdapter();
   }
 
   /**
@@ -40,6 +38,11 @@ export class Bot {
    * Start the bot (connect to the platform)
    */
   async start(): Promise<void> {
+    // Re-subscribe if we previously unsubscribed via stop()
+    if (!this.unsubscribeAdapter) {
+      this.subscribeToAdapter();
+    }
+
     // Connect to the platform if not already connected
     if (!this.adapter.isConnected()) {
       await this.adapter.connect(this.credentials);
@@ -50,6 +53,8 @@ export class Bot {
    * Stop the bot (disconnect from the platform)
    */
   async stop(): Promise<void> {
+    this.unsubscribeAdapter?.();
+    this.unsubscribeAdapter = null;
     await this.adapter.disconnect();
   }
 
@@ -172,8 +177,8 @@ export class Bot {
    * });
    * ```
    */
-  onMessage(handler: MessageHandler | ((message: UnifiedMessage) => void | Promise<void>)): void {
-    this.on('message', async (event) => {
+  onMessage(handler: MessageHandler | ((message: UnifiedMessage) => void | Promise<void>)): () => void {
+    return this.on('message', async (event) => {
       if (event.type === 'message') {
         const message = event.message;
 
@@ -237,9 +242,20 @@ export class Bot {
   /**
    * Register a handler for reaction events
    */
-  onReaction(handler: (event: ReactionEvent) => void | Promise<void>): void {
-    this.on('reaction', async (event) => {
+  onReaction(handler: (event: ReactionEvent) => void | Promise<void>): () => void {
+    return this.on('reaction', async (event) => {
       if (event.type === 'reaction') {
+        await handler(event);
+      }
+    });
+  }
+
+  /**
+   * Register a handler for message edited events
+   */
+  onMessageEdited(handler: (event: MessageEditedEvent) => void | Promise<void>): () => void {
+    return this.on('message_edited', async (event) => {
+      if (event.type === 'message_edited') {
         await handler(event);
       }
     });
@@ -248,8 +264,8 @@ export class Bot {
   /**
    * Register a handler for any event
    */
-  onEvent(handler: (event: UnifiedEvent) => void | Promise<void>): void {
-    this.on('*', handler);
+  onEvent(handler: (event: UnifiedEvent) => void | Promise<void>): () => void {
+    return this.on('*', handler);
   }
 
   /**
@@ -265,11 +281,21 @@ export class Bot {
   private on(
     eventType: string,
     handler: (event: UnifiedEvent) => void | Promise<void>
-  ): void {
+  ): () => void {
     if (!this.eventHandlers.has(eventType)) {
       this.eventHandlers.set(eventType, new Set());
     }
     this.eventHandlers.get(eventType)!.add(handler);
+    return () => { this.eventHandlers.get(eventType)?.delete(handler); };
+  }
+
+  /**
+   * Internal: Subscribe to adapter events and store the unsubscribe handle
+   */
+  private subscribeToAdapter(): void {
+    this.unsubscribeAdapter = this.adapter.onEvent(async (event) => {
+      await this.handleEvent(event);
+    });
   }
 
   /**

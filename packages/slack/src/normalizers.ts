@@ -2,7 +2,7 @@
  * Normalizers for converting Slack types to Switchboard unified types
  */
 
-import type { UnifiedMessage, UnifiedEvent, Attachment } from '@aarekaz/switchboard-core';
+import type { UnifiedMessage, UnifiedEvent, Attachment, MessageEditedEvent } from '@aarekaz/switchboard-core';
 
 /**
  * Normalize a Slack message to UnifiedMessage
@@ -164,9 +164,33 @@ export function normalizeMessageEvent(event: any): UnifiedEvent {
 export function normalizeReactionEvent(event: any, action: 'added' | 'removed'): UnifiedEvent {
   return {
     type: 'reaction',
+    channelId: event.item.channel,
     messageId: event.item.ts,
     userId: event.user,
     emoji: normalizeEmoji(event.reaction),
     action,
+  };
+}
+
+/**
+ * Normalize a message_changed event from Slack to MessageEditedEvent
+ */
+export function normalizeMessageEditedEvent(event: any): MessageEditedEvent {
+  const newMessage = event.message;
+
+  // Add channel from the outer event since message.channel may not be set
+  const messageWithChannel = {
+    ...newMessage,
+    channel: newMessage.channel || event.channel,
+  };
+
+  const editedTs = newMessage.edited?.ts
+    ? parseFloat(newMessage.edited.ts)
+    : parseFloat(event.ts || '0');
+
+  return {
+    type: 'message_edited',
+    message: normalizeMessage(messageWithChannel),
+    editedAt: new Date(editedTs * 1000),
   };
 }
