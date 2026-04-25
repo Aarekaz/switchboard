@@ -1,4 +1,15 @@
 import type { PlatformType } from './platform.js';
+import type { TextStream } from '../utils/stream.js';
+
+/**
+ * Accepted content for send/reply/createThread.
+ *
+ * - `string` — a single, static message (classic path)
+ * - `TextStream` — `AsyncIterable<string>` or `ReadableStream<string>` (e.g. AI SDK
+ *   `result.textStream`); the bot posts a placeholder, then edits the message as
+ *   chunks arrive, respecting `SendMessageOptions.stream`.
+ */
+export type MessageContent = string | TextStream;
 
 /**
  * File attachment
@@ -86,11 +97,40 @@ export interface UnifiedMessage {
 export type MessageRef = string | UnifiedMessage;
 
 /**
+ * Options that control streamed message delivery.
+ * Only consulted when the content passed to send/reply/createThread is a stream.
+ */
+export interface StreamOptions {
+  /**
+   * Edit cadence in milliseconds. The bot edits the posted message at most
+   * once per interval while the stream is producing new text.
+   *
+   * Default: `750`. Slack's rate limits are tight — consider `1000`+ there.
+   */
+  updateIntervalMs?: number;
+
+  /**
+   * Placeholder text posted before the first chunk arrives. Must be non-empty
+   * (Slack rejects empty messages). Default: `"..."`.
+   */
+  placeholder?: string;
+
+  /**
+   * Invoked once per source chunk, with the full accumulated text so far.
+   * Useful for telemetry, token counting, or UI progress outside the chat.
+   */
+  onChunk?: (fullText: string) => void;
+}
+
+/**
  * Options for sending messages
  */
 export interface SendMessageOptions {
   /** Send message in a specific thread */
   threadId?: string;
+
+  /** Options for streamed content (ignored when content is a plain string) */
+  stream?: StreamOptions;
 
   // Platform-specific options (opt-in)
   /** Discord-specific options */

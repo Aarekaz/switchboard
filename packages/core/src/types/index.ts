@@ -11,6 +11,8 @@ export type {
   MessageRef,
   Attachment,
   SendMessageOptions,
+  StreamOptions,
+  MessageContent,
   UploadOptions,
 } from './message.js';
 

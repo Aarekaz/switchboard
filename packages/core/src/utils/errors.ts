@@ -105,6 +105,30 @@ export class MessageDeleteError extends SwitchboardError {
 }
 
 /**
+ * Error thrown when a streamed message fails mid-stream.
+ *
+ * The message was posted (and may have been partially edited with content
+ * received before the failure); `partialText` is the last text successfully
+ * accumulated from the stream so callers can decide whether to retry, fall
+ * back, or leave the partial state in place.
+ */
+export class StreamError extends SwitchboardError {
+  constructor(
+    platform: PlatformType,
+    public readonly partialText: string,
+    cause: unknown
+  ) {
+    super(
+      `Stream failed on ${platform} after ${partialText.length} chars: ${cause instanceof Error ? cause.message : String(cause)}`,
+      'STREAM_ERROR',
+      platform
+    );
+    this.name = 'StreamError';
+    this.cause = cause;
+  }
+}
+
+/**
  * Error thrown when adding/removing a reaction fails
  */
 export class ReactionError extends SwitchboardError {

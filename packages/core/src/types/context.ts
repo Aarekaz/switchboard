@@ -8,7 +8,7 @@
  */
 
 import type { UnifiedMessage } from './message.js';
-import type { SendMessageOptions } from './message.js';
+import type { SendMessageOptions, MessageContent } from './message.js';
 import type { Result } from './result.js';
 import type { PlatformType } from './platform.js';
 
@@ -62,21 +62,24 @@ export interface MessageContext {
   readonly threadId: string | undefined;
 
   /**
-   * Reply to the message
+   * Reply to the message. Accepts a string or a text stream (e.g. AI SDK's
+   * `result.textStream`). When given a stream, the reply is posted with a
+   * placeholder and edited as chunks arrive.
    *
-   * @param text - Text to reply with
-   * @param options - Optional message options
+   * @param content - Text or stream to reply with
+   * @param options - Optional message options (including `stream` cadence)
    * @returns Result containing the sent message
    *
    * @example
    * ```typescript
    * await ctx.reply('Got your message!');
    *
-   * // With options
-   * await ctx.reply('Thread reply', { threadId: ctx.threadId });
+   * // Stream an AI response into the reply
+   * const { textStream } = streamText({ model, prompt: ctx.text });
+   * await ctx.reply(textStream);
    * ```
    */
-  reply(text: string, options?: SendMessageOptions): Promise<Result<UnifiedMessage>>;
+  reply(content: MessageContent, options?: SendMessageOptions): Promise<Result<UnifiedMessage>>;
 
   /**
    * Add a reaction to the message
@@ -125,9 +128,9 @@ export interface MessageContext {
   delete(): Promise<Result<void>>;
 
   /**
-   * Create a thread on the message
+   * Create a thread on the message. Accepts a string or a text stream.
    *
-   * @param text - First message in the thread
+   * @param content - First message in the thread (text or stream)
    * @returns Result containing the thread message
    *
    * @example
@@ -135,13 +138,13 @@ export interface MessageContext {
    * await ctx.createThread('Let\'s discuss this!');
    * ```
    */
-  createThread(text: string): Promise<Result<UnifiedMessage>>;
+  createThread(content: MessageContent): Promise<Result<UnifiedMessage>>;
 
   /**
-   * Send a new message to the same channel
+   * Send a new message to the same channel. Accepts a string or a text stream.
    *
-   * @param text - Message text
-   * @param options - Optional message options
+   * @param content - Message text or stream
+   * @param options - Optional message options (including `stream` cadence)
    * @returns Result containing the sent message
    *
    * @example
@@ -149,7 +152,7 @@ export interface MessageContext {
    * await ctx.send('This is a new message');
    * ```
    */
-  send(text: string, options?: SendMessageOptions): Promise<Result<UnifiedMessage>>;
+  send(content: MessageContent, options?: SendMessageOptions): Promise<Result<UnifiedMessage>>;
 }
 
 /**

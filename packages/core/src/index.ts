@@ -20,6 +20,8 @@ export type {
   MessageRef,
   Attachment,
   SendMessageOptions,
+  StreamOptions,
+  MessageContent,
   UploadOptions,
   // Events
   UnifiedEvent,
@@ -56,4 +58,9 @@ export {
   MessageEditError,
   MessageDeleteError,
   ReactionError,
+  StreamError,
 } from './utils/index.js';
+
+// Streaming helpers
+export { toAsyncIterable } from './utils/index.js';
+export type { TextStream } from './utils/index.js';
