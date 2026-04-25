@@ -1,9 +1,34 @@
 {
   "name": "@aarekaz/switchboard-slack",
   "version": "0.3.5",
-  "description": "Slack adapter for Switchboard SDK",
+  "description": "Slack adapter for Switchboard — build cross-platform Slack bots with the same API as Discord and Telegram. Built on @slack/bolt v4.",
+  "keywords": [
+    "switchboard",
+    "slack",
+    "slack-bot",
+    "slack-bolt",
+    "bolt",
+    "chat",
+    "chatbot",
+    "bot",
+    "sdk",
+    "adapter",
+    "typescript"
+  ],
+  "homepage": "https://github.com/Aarekaz/switchboard#readme",
+  "bugs": {
+    "url": "https://github.com/Aarekaz/switchboard/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aarekaz/switchboard.git",
+    "directory": "packages/slack"
+  },
+  "license": "MIT",
+  "author": "Anurag Dhungana",
   "type": "module",
   "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
@@ -31,13 +56,7 @@
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"
   },
-  "keywords": [
-    "switchboard",
-    "slack",
-    "bot",
-    "chat",
-    "adapter"
-  ],
-  "author": "",
-  "license": "MIT"
+  "publishConfig": {
+    "access": "public"
+  }
 }

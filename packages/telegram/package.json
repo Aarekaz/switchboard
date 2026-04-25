@@ -1,21 +1,31 @@
 {
   "name": "@aarekaz/switchboard-telegram",
   "version": "0.3.5",
-  "description": "Telegram adapter for Switchboard SDK",
+  "description": "Telegram adapter for Switchboard — build cross-platform Telegram bots with the same API as Discord and Slack. Built on grammy.",
   "keywords": [
     "switchboard",
     "telegram",
+    "telegram-bot",
+    "grammy",
+    "grammyjs",
+    "chat",
+    "chatbot",
     "bot",
-    "adapter"
+    "sdk",
+    "adapter",
+    "typescript"
   ],
   "homepage": "https://github.com/Aarekaz/switchboard#readme",
+  "bugs": {
+    "url": "https://github.com/Aarekaz/switchboard/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Aarekaz/switchboard.git",
     "directory": "packages/telegram"
   },
   "license": "MIT",
-  "author": "Aarekaz",
+  "author": "Anurag Dhungana",
   "type": "module",
   "exports": {
     ".": {

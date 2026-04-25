@@ -1,16 +1,32 @@
 {
   "name": "@aarekaz/switchboard",
   "version": "0.3.5",
-  "description": "Universal SDK for chat platforms - build bots once, deploy everywhere",
+  "description": "Universal TypeScript SDK for chat bots — write once, deploy to Discord, Slack, and Telegram. AI streaming, Result<T> errors, type-safe.",
   "keywords": [
     "chat",
+    "chatbot",
     "bot",
+    "sdk",
+    "typescript",
     "discord",
+    "discord-bot",
     "slack",
+    "slack-bot",
     "telegram",
-    "sdk"
+    "telegram-bot",
+    "multi-platform",
+    "cross-platform",
+    "universal",
+    "ai",
+    "agent",
+    "llm",
+    "streaming",
+    "ai-sdk"
   ],
   "homepage": "https://github.com/Aarekaz/switchboard#readme",
+  "bugs": {
+    "url": "https://github.com/Aarekaz/switchboard/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Aarekaz/switchboard.git"
