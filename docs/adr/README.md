@@ -5,6 +5,7 @@ This directory contains records of architectural decisions made in the Switchboa
 ## Format
 
 Each ADR follows this structure:
+
 - **Status**: Accepted, Proposed, Deprecated, Superseded
 - **Context**: The issue motivating this decision
 - **Decision**: The change being proposed or made
@@ -51,17 +52,21 @@ When making significant architectural decisions:
 ## Consequences
 
 ### Positive
+
 - [Good outcome]
 
 ### Negative
+
 - [Trade-off]
 
 ### Neutral
+
 - [Side effect]
 
 ## Alternatives Considered
 
 ### Alternative 1: [Name]
+
 - **Pros**: [Benefits]
 - **Cons**: [Drawbacks]
 - **Reason for rejection**: [Why we didn't choose this]

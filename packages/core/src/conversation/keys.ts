@@ -5,7 +5,10 @@ function encodePart(value: string): string {
   return encodeURIComponent(value);
 }
 
-export function platformUserKey(platform: PlatformType, userId: string): string {
+export function platformUserKey(
+  platform: PlatformType,
+  userId: string
+): string {
   return `platform-user:${encodePart(platform)}:${encodePart(userId)}`;
 }
 

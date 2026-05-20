@@ -11,6 +11,7 @@ pnpm add @aarekaz/switchboard
 ```
 
 Subpath exports for adapters:
+
 - `@aarekaz/switchboard` - Core types, client, and interfaces
 - `@aarekaz/switchboard/discord` - Discord adapter
 - `@aarekaz/switchboard/slack` - Slack adapter
@@ -27,12 +28,11 @@ The core package provides platform-agnostic interfaces and types.
 Creates a new bot instance for the specified platform.
 
 ```typescript
-function createBot<P extends PlatformType>(
-  config: BotConfig<P>
-): Bot
+function createBot<P extends PlatformType>(config: BotConfig<P>): Bot;
 ```
 
 **Parameters:**
+
 - `config`: Bot configuration object
   - `platform`: Platform name (`'discord' | 'slack' | 'telegram'`)
   - `credentials`: Platform-specific credentials
@@ -41,6 +41,7 @@ function createBot<P extends PlatformType>(
 **Returns:** `Bot` instance
 
 **Example:**
+
 ```typescript
 import { createBot } from '@aarekaz/switchboard';
 import '@aarekaz/switchboard/discord';
@@ -75,12 +76,14 @@ Create a portable conversation helper for a normalized message. The helper deriv
 By default, conversations use the core in-memory store. That is useful for local bots, tests, and short-lived examples. Production bots should pass a durable `ConversationStore` implementation backed by their own database, cache, or runtime state service.
 
 **Parameters:**
+
 - `message`: Message to anchor the conversation to
 - `options?`: Optional conversation key, identity key, store, or metadata
 
 **Returns:** `Conversation`
 
 **Example:**
+
 ```typescript
 bot.onMessage(async (ctx) => {
   const conversation = bot.conversationFor(ctx.message);
@@ -115,6 +118,7 @@ bot.onMessage(async (ctx) => {
 ```
 
 **Related APIs:**
+
 - `Conversation.append(message, role?, metadata?)`
 - `Conversation.toAISDKMessages({ limit?, since? })`
 - `InMemoryConversationStore`
@@ -133,6 +137,7 @@ Connects to the platform and starts the bot.
 **Throws:** `ConnectionError` if connection fails
 
 **Example:**
+
 ```typescript
 await bot.start();
 console.log('Bot is running!');
@@ -149,6 +154,7 @@ async stop(): Promise<void>
 Disconnects from the platform and stops the bot.
 
 **Example:**
+
 ```typescript
 await bot.stop();
 ```
@@ -164,9 +170,11 @@ onMessage(handler: (ctx: MessageContext) => void | Promise<void>): () => void
 Register a handler for incoming messages. Handlers receive a `MessageContext`, which exposes the normalized message plus convenience helpers like `ctx.reply()`, `ctx.react()`, and `ctx.createThread()`.
 
 **Parameters:**
+
 - `handler`: Function to call when messages are received
 
 **Example:**
+
 ```typescript
 bot.onMessage(async (ctx) => {
   console.log(`Message from ${ctx.userId}: ${ctx.text}`);
@@ -192,6 +200,7 @@ async sendMessage(
 Send a message to a channel.
 
 **Parameters:**
+
 - `channelId`: ID of the channel to send to
 - `content`: Message text or text stream
 - `options?`: Optional message options
@@ -199,6 +208,7 @@ Send a message to a channel.
 **Returns:** `Result<UnifiedMessage>` - The sent message or an error
 
 **Example:**
+
 ```typescript
 const result = await bot.sendMessage('channel-id', 'Hello, world!');
 
@@ -224,6 +234,7 @@ async reply(
 Reply to a message.
 
 **Parameters:**
+
 - `message`: Message to reply to
 - `content`: Reply text or text stream
 - `options?`: Optional message options
@@ -231,6 +242,7 @@ Reply to a message.
 **Returns:** `Result<UnifiedMessage>`
 
 **Example:**
+
 ```typescript
 bot.onMessage(async (ctx) => {
   const result = await ctx.reply('Got your message!');
@@ -255,17 +267,19 @@ async editMessage(
 Edit an existing message.
 
 **Parameters:**
+
 - `messageRef`: Message to edit (string ID or UnifiedMessage object)
 - `newText`: New text for the message
 
 **Returns:** `Result<UnifiedMessage>`
 
 **Example:**
+
 ```typescript
 const sendResult = await bot.sendMessage('channel-id', 'Original');
 
 if (sendResult.ok) {
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   const editResult = await bot.editMessage(sendResult.value, 'Edited!');
 
@@ -286,11 +300,13 @@ async deleteMessage(messageRef: MessageRef): Promise<Result<void>>
 Delete a message.
 
 **Parameters:**
+
 - `messageRef`: Message to delete (string ID or UnifiedMessage object)
 
 **Returns:** `Result<void>`
 
 **Example:**
+
 ```typescript
 const result = await bot.deleteMessage(message);
 
@@ -313,12 +329,14 @@ async addReaction(
 Add a reaction to a message.
 
 **Parameters:**
+
 - `messageRef`: Message to react to
 - `emoji`: Emoji to add (Unicode or Slack name format)
 
 **Returns:** `Result<void>`
 
 **Example:**
+
 ```typescript
 // Unicode emoji (works on Discord, converted on Slack)
 await bot.addReaction(message, '👍');
@@ -341,6 +359,7 @@ async removeReaction(
 Remove a reaction from a message.
 
 **Parameters:**
+
 - `messageRef`: Message to remove reaction from
 - `emoji`: Emoji to remove
 
@@ -360,16 +379,18 @@ async createThread(
 Create a thread on a message.
 
 **Parameters:**
+
 - `messageRef`: Message to create thread on
 - `content`: First message in the thread, as text or a text stream
 
 **Returns:** `Result<UnifiedMessage>` - The thread message
 
 **Example:**
+
 ```typescript
 bot.onMessage(async (ctx) => {
   if (ctx.text.includes('discuss')) {
-    const result = await ctx.createThread('Let\'s discuss this!');
+    const result = await ctx.createThread("Let's discuss this!");
 
     if (result.ok) {
       console.log('Thread created:', result.value.threadId);
@@ -401,6 +422,7 @@ async getUsers(channelId?: string): Promise<Result<User[]>>
 Get list of users, optionally scoped to a channel.
 
 **Parameters:**
+
 - `channelId?`: Optional channel ID for platforms that support channel-scoped user lookup
 
 **Returns:** `Result<User[]>`
@@ -455,6 +477,7 @@ type MessageRef = string | UnifiedMessage;
 ```
 
 **Usage:**
+
 - Passing `UnifiedMessage` works reliably on ALL platforms
 - Passing string ID works on Discord, works on Slack if cached (~95% of cases)
 
@@ -467,12 +490,11 @@ type MessageRef = string | UnifiedMessage;
 Explicit error handling type inspired by Rust.
 
 ```typescript
-type Result<T> =
-  | { ok: true; value: T }
-  | { ok: false; error: Error };
+type Result<T> = { ok: true; value: T } | { ok: false; error: Error };
 ```
 
 **Example:**
+
 ```typescript
 const result = await bot.sendMessage('channel', 'Hello!');
 
@@ -509,7 +531,13 @@ interface Channel {
   topic?: string;
 }
 
-type ChannelType = 'text' | 'voice' | 'dm' | 'group_dm' | 'category' | 'unknown';
+type ChannelType =
+  | 'text'
+  | 'voice'
+  | 'dm'
+  | 'group_dm'
+  | 'category'
+  | 'unknown';
 ```
 
 ---
@@ -595,6 +623,7 @@ interface SendMessageOptions {
 ```
 
 **Example with platform-specific options:**
+
 ```typescript
 // Slack Block Kit
 await bot.sendMessage('channel-id', 'Hello!', {
@@ -602,10 +631,10 @@ await bot.sendMessage('channel-id', 'Hello!', {
     blocks: [
       {
         type: 'section',
-        text: { type: 'mrkdwn', text: '*Bold* message' }
-      }
-    ]
-  }
+        text: { type: 'mrkdwn', text: '*Bold* message' },
+      },
+    ],
+  },
 });
 ```
 
@@ -664,10 +693,17 @@ interface PlatformAdapter {
   onEvent(handler: (event: UnifiedEvent) => void | Promise<void>): () => void;
 
   /** Send message */
-  sendMessage(channelId: string, text: string, options?: SendMessageOptions): Promise<Result<UnifiedMessage>>;
+  sendMessage(
+    channelId: string,
+    text: string,
+    options?: SendMessageOptions
+  ): Promise<Result<UnifiedMessage>>;
 
   /** Edit message */
-  editMessage(messageRef: MessageRef, newText: string): Promise<Result<UnifiedMessage>>;
+  editMessage(
+    messageRef: MessageRef,
+    newText: string
+  ): Promise<Result<UnifiedMessage>>;
 
   /** Delete message */
   deleteMessage(messageRef: MessageRef): Promise<Result<void>>;
@@ -679,10 +715,17 @@ interface PlatformAdapter {
   removeReaction(messageRef: MessageRef, emoji: string): Promise<Result<void>>;
 
   /** Create thread */
-  createThread(messageRef: MessageRef, text: string): Promise<Result<UnifiedMessage>>;
+  createThread(
+    messageRef: MessageRef,
+    text: string
+  ): Promise<Result<UnifiedMessage>>;
 
   /** Upload file */
-  uploadFile(channelId: string, file: unknown, options?: UploadOptions): Promise<Result<UnifiedMessage>>;
+  uploadFile(
+    channelId: string,
+    file: unknown,
+    options?: UploadOptions
+  ): Promise<Result<UnifiedMessage>>;
 
   /** Get channels */
   getChannels(): Promise<Result<Channel[]>>;
@@ -792,6 +835,7 @@ interface SlackConfig {
 ### Example
 
 **Socket Mode** (recommended for development):
+
 ```typescript
 import { createBot } from '@aarekaz/switchboard';
 import '@aarekaz/switchboard/slack';
@@ -808,6 +852,7 @@ await bot.start();
 ```
 
 **Events API** (recommended for production):
+
 ```typescript
 const bot = createBot({
   platform: 'slack',
@@ -819,6 +864,7 @@ const bot = createBot({
 ```
 
 **Custom Configuration**:
+
 ```typescript
 import { SlackAdapter } from '@aarekaz/switchboard/slack';
 
@@ -830,13 +876,16 @@ const adapter = new SlackAdapter({
 const bot = createBot({
   platform: 'slack',
   adapter,
-  credentials: { /* ... */ },
+  credentials: {
+    /* ... */
+  },
 });
 ```
 
 ### Message Context Caching
 
 Slack adapter uses an LRU cache to enable string message IDs:
+
 - **Cache size**: 1000 messages (configurable)
 - **TTL**: 1 hour (configurable)
 - **Hit rate**: ~95% for typical usage
@@ -849,11 +898,11 @@ Slack requires named emoji format (`:thumbsup:`), but Switchboard automatically 
 
 ```typescript
 // These work automatically:
-await bot.addReaction(message, '👍');  // Converted to 'thumbsup'
-await bot.addReaction(message, '🎉');  // Converted to 'tada'
+await bot.addReaction(message, '👍'); // Converted to 'thumbsup'
+await bot.addReaction(message, '🎉'); // Converted to 'tada'
 
 // Or use named format directly:
-await bot.addReaction(message, 'thumbsup');  // Works everywhere
+await bot.addReaction(message, 'thumbsup'); // Works everywhere
 ```
 
 **See:** [ADR-005](../adr/005-emoji-mapping-strategy.md) for emoji mapping
@@ -868,10 +917,10 @@ await bot.sendMessage('channel-id', 'Hello!', {
     blocks: [
       {
         type: 'section',
-        text: { type: 'mrkdwn', text: '*Bold* message' }
-      }
-    ]
-  }
+        text: { type: 'mrkdwn', text: '*Bold* message' },
+      },
+    ],
+  },
 });
 ```
 
@@ -938,10 +987,11 @@ See [Telegram README](../../packages/telegram/README.md) for complete documentat
 Create a successful Result.
 
 ```typescript
-function ok<T>(value: T): Result<T>
+function ok<T>(value: T): Result<T>;
 ```
 
 **Example:**
+
 ```typescript
 return ok({ id: '123', text: 'Hello' });
 ```
@@ -951,10 +1001,11 @@ return ok({ id: '123', text: 'Hello' });
 Create an error Result.
 
 ```typescript
-function err<T>(error: Error): Result<T>
+function err<T>(error: Error): Result<T>;
 ```
 
 **Example:**
+
 ```typescript
 return err(new Error('Connection failed'));
 ```
@@ -985,7 +1036,7 @@ For guaranteed reliability across platforms:
 // Recommended
 bot.onMessage(async (ctx) => {
   await bot.editMessage(ctx.message, 'Updated'); // Always works
-  await ctx.react('👍');                         // Always works
+  await ctx.react('👍'); // Always works
 });
 
 // Works, but may fail on Slack if cached

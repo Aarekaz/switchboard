@@ -58,11 +58,13 @@ Conversation keys are derived from platform, channel, and thread/message identif
 ### Alternative 1: Require Vercel Chat SDK or a Stateful Agent Framework
 
 **Pros**:
+
 - Rich agent patterns already exist
 - Persistent state guidance is available
 - Strong fit for full web app experiences
 
 **Cons**:
+
 - Adds framework coupling to a platform SDK
 - Increases setup cost for lightweight bots
 - Pulls Switchboard away from its adapter-focused abstraction
@@ -74,10 +76,12 @@ Conversation keys are derived from platform, channel, and thread/message identif
 ### Alternative 2: Store Conversation State in Platform Adapters
 
 **Pros**:
+
 - Adapters know platform-specific thread semantics
 - Could use native platform state when available
 
 **Cons**:
+
 - Forces every adapter to implement state behavior
 - Produces inconsistent persistence guarantees across platforms
 - Makes one-line platform swaps harder to reason about
@@ -89,10 +93,12 @@ Conversation keys are derived from platform, channel, and thread/message identif
 ### Alternative 3: Leave Conversation History Entirely to Users
 
 **Pros**:
+
 - No new core API surface
 - Maximum flexibility
 
 **Cons**:
+
 - Every bot repeats keying, normalization, and AI SDK export logic
 - Harder to write portable examples
 - More room for platform-specific branching

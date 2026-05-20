@@ -10,7 +10,11 @@ import type {
   SendMessageOptions,
   UploadOptions,
 } from '../types/message.js';
-import type { UnifiedEvent, ReactionEvent, MessageEditedEvent } from '../types/event.js';
+import type {
+  UnifiedEvent,
+  ReactionEvent,
+  MessageEditedEvent,
+} from '../types/event.js';
 import type { Channel } from '../types/channel.js';
 import type { User } from '../types/user.js';
 import type { MessageContext, MessageHandler } from '../types/context.js';
@@ -21,7 +25,9 @@ import { StreamError } from '../utils/errors.js';
 const DEFAULT_STREAM_INTERVAL_MS = 750;
 const DEFAULT_STREAM_PLACEHOLDER = '...';
 
-function isStream(content: MessageContent): content is Exclude<MessageContent, string> {
+function isStream(
+  content: MessageContent
+): content is Exclude<MessageContent, string> {
   return typeof content !== 'string';
 }
 
@@ -29,7 +35,10 @@ function isStream(content: MessageContent): content is Exclude<MessageContent, s
  * Bot client - the main interface for interacting with chat platforms
  */
 export class Bot {
-  private eventHandlers: Map<string, Set<(event: UnifiedEvent) => void | Promise<void>>> = new Map();
+  private eventHandlers: Map<
+    string,
+    Set<(event: UnifiedEvent) => void | Promise<void>>
+  > = new Map();
   private unsubscribeAdapter: (() => void) | null = null;
 
   constructor(
@@ -145,14 +154,20 @@ export class Bot {
   /**
    * Add a reaction to a message
    */
-  async addReaction(messageRef: MessageRef, emoji: string): Promise<Result<void>> {
+  async addReaction(
+    messageRef: MessageRef,
+    emoji: string
+  ): Promise<Result<void>> {
     return this.adapter.addReaction(messageRef, emoji);
   }
 
   /**
    * Remove a reaction from a message
    */
-  async removeReaction(messageRef: MessageRef, emoji: string): Promise<Result<void>> {
+  async removeReaction(
+    messageRef: MessageRef,
+    emoji: string
+  ): Promise<Result<void>> {
     return this.adapter.removeReaction(messageRef, emoji);
   }
 
@@ -218,7 +233,11 @@ export class Bot {
    * });
    * ```
    */
-  onMessage(handler: MessageHandler | ((message: UnifiedMessage) => void | Promise<void>)): () => void {
+  onMessage(
+    handler:
+      | MessageHandler
+      | ((message: UnifiedMessage) => void | Promise<void>)
+  ): () => void {
     return this.on('message', async (event) => {
       if (event.type === 'message') {
         const message = event.message;
@@ -283,7 +302,9 @@ export class Bot {
   /**
    * Register a handler for reaction events
    */
-  onReaction(handler: (event: ReactionEvent) => void | Promise<void>): () => void {
+  onReaction(
+    handler: (event: ReactionEvent) => void | Promise<void>
+  ): () => void {
     return this.on('reaction', async (event) => {
       if (event.type === 'reaction') {
         await handler(event);
@@ -294,7 +315,9 @@ export class Bot {
   /**
    * Register a handler for message edited events
    */
-  onMessageEdited(handler: (event: MessageEditedEvent) => void | Promise<void>): () => void {
+  onMessageEdited(
+    handler: (event: MessageEditedEvent) => void | Promise<void>
+  ): () => void {
     return this.on('message_edited', async (event) => {
       if (event.type === 'message_edited') {
         await handler(event);
@@ -327,7 +350,9 @@ export class Bot {
       this.eventHandlers.set(eventType, new Set());
     }
     this.eventHandlers.get(eventType)!.add(handler);
-    return () => { this.eventHandlers.get(eventType)?.delete(handler); };
+    return () => {
+      this.eventHandlers.get(eventType)?.delete(handler);
+    };
   }
 
   /**
@@ -338,8 +363,13 @@ export class Bot {
     stream: Exclude<MessageContent, string>,
     options: SendMessageOptions | undefined
   ): Promise<Result<UnifiedMessage>> {
-    const placeholder = options?.stream?.placeholder ?? DEFAULT_STREAM_PLACEHOLDER;
-    const initial = await this.adapter.sendMessage(channelId, placeholder, options);
+    const placeholder =
+      options?.stream?.placeholder ?? DEFAULT_STREAM_PLACEHOLDER;
+    const initial = await this.adapter.sendMessage(
+      channelId,
+      placeholder,
+      options
+    );
     if (!initial.ok) return initial;
     return this.driveStream(initial.value, stream, options);
   }
@@ -354,7 +384,8 @@ export class Bot {
     stream: Exclude<MessageContent, string>,
     options: SendMessageOptions | undefined
   ): Promise<Result<UnifiedMessage>> {
-    const intervalMs = options?.stream?.updateIntervalMs ?? DEFAULT_STREAM_INTERVAL_MS;
+    const intervalMs =
+      options?.stream?.updateIntervalMs ?? DEFAULT_STREAM_INTERVAL_MS;
     const onChunk = options?.stream?.onChunk;
 
     let accumulated = '';
@@ -428,10 +459,7 @@ export class Bot {
         try {
           await handler(event);
         } catch (error) {
-          console.error(
-            `[Switchboard] Error in ${event.type} handler:`,
-            error
-          );
+          console.error(`[Switchboard] Error in ${event.type} handler:`, error);
         }
       }
     }

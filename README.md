@@ -93,17 +93,17 @@ await ctx.reply(textStream, {
 
 ## How it compares
 
-| | **Switchboard** | **discord.js / @slack/bolt / grammy** | **Vercel Chat SDK** |
-|---|---|---|---|
-| **Cross-platform API** | ✅ Discord, Slack, Telegram | ❌ Single platform each | ✅ Slack, Teams, Discord, Telegram, +5 more |
-| **One-line platform swap** | ✅ | ❌ | ⚠️ Adapter swap |
-| **AI streaming into messages** | ✅ Built in | ❌ DIY | ✅ Built in |
-| **Error model** | `Result<T>` for routine operations | Throws | Throws |
-| **State backend required** | ❌ Zero infra | ❌ | ⚠️ Redis/Postgres recommended |
-| **Bundle footprint** | Lean — adapter-scoped | Lean | Heavier (cards, modals, state) |
-| **JSX cards / modals / slash commands** | ❌ Not yet | Platform-specific | ✅ |
-| **Bring-your-own AI SDK** | ✅ AI SDK, OpenAI SDK, anything | ✅ | Optimized for AI SDK |
-| **Best for** | Lightweight bots, BYO AI, infra-free deploys | Single-platform native power-users | Production agents with rich UI |
+|                                         | **Switchboard**                              | **discord.js / @slack/bolt / grammy** | **Vercel Chat SDK**                         |
+| --------------------------------------- | -------------------------------------------- | ------------------------------------- | ------------------------------------------- |
+| **Cross-platform API**                  | ✅ Discord, Slack, Telegram                  | ❌ Single platform each               | ✅ Slack, Teams, Discord, Telegram, +5 more |
+| **One-line platform swap**              | ✅                                           | ❌                                    | ⚠️ Adapter swap                             |
+| **AI streaming into messages**          | ✅ Built in                                  | ❌ DIY                                | ✅ Built in                                 |
+| **Error model**                         | `Result<T>` for routine operations           | Throws                                | Throws                                      |
+| **State backend required**              | ❌ Zero infra                                | ❌                                    | ⚠️ Redis/Postgres recommended               |
+| **Bundle footprint**                    | Lean — adapter-scoped                        | Lean                                  | Heavier (cards, modals, state)              |
+| **JSX cards / modals / slash commands** | ❌ Not yet                                   | Platform-specific                     | ✅                                          |
+| **Bring-your-own AI SDK**               | ✅ AI SDK, OpenAI SDK, anything              | ✅                                    | Optimized for AI SDK                        |
+| **Best for**                            | Lightweight bots, BYO AI, infra-free deploys | Single-platform native power-users    | Production agents with rich UI              |
 
 ## Examples
 

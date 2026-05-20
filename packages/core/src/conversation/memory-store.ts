@@ -76,7 +76,9 @@ export class InMemoryConversationStore implements ConversationStore {
     return ok(snapshot ? cloneSnapshot(snapshot) : null);
   }
 
-  async set(snapshot: ConversationSnapshot): Promise<Result<ConversationSnapshot>> {
+  async set(
+    snapshot: ConversationSnapshot
+  ): Promise<Result<ConversationSnapshot>> {
     const cloned = cloneSnapshot(snapshot);
     this.snapshots.set(cloned.key, cloned);
     return ok(cloneSnapshot(cloned));

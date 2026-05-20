@@ -40,6 +40,7 @@
 ### Task 1: Add Portable Conversation Types
 
 **Files:**
+
 - Create: `packages/core/src/conversation/types.ts`
 - Test: `packages/core/src/conversation/types.test.ts`
 
@@ -202,6 +203,7 @@ git commit -m "feat(core): add portable conversation types"
 ### Task 2: Add Deterministic Conversation Keys
 
 **Files:**
+
 - Create: `packages/core/src/conversation/keys.ts`
 - Test: `packages/core/src/conversation/keys.test.ts`
 
@@ -277,7 +279,10 @@ function encodePart(value: string): string {
   return encodeURIComponent(value);
 }
 
-export function platformUserKey(platform: PlatformType, userId: string): string {
+export function platformUserKey(
+  platform: PlatformType,
+  userId: string
+): string {
   return `platform-user:${encodePart(platform)}:${encodePart(userId)}`;
 }
 
@@ -320,6 +325,7 @@ git commit -m "feat(core): add portable conversation keys"
 ### Task 3: Add In-Memory Conversation Store
 
 **Files:**
+
 - Create: `packages/core/src/conversation/memory-store.ts`
 - Test: `packages/core/src/conversation/memory-store.test.ts`
 
@@ -329,7 +335,10 @@ git commit -m "feat(core): add portable conversation keys"
 // packages/core/src/conversation/memory-store.test.ts
 import { describe, expect, it } from 'vitest';
 import { InMemoryConversationStore } from './memory-store.js';
-import type { ConversationSnapshot, PortableConversationMessage } from './types.js';
+import type {
+  ConversationSnapshot,
+  PortableConversationMessage,
+} from './types.js';
 
 const updatedAt = new Date('2026-05-20T10:00:00.000Z');
 
@@ -390,7 +399,10 @@ describe('InMemoryConversationStore', () => {
   it('appends messages in order', async () => {
     const store = new InMemoryConversationStore();
     await store.set(snapshot());
-    const result = await store.append('platform-thread:slack:C1:T1', message('m1'));
+    const result = await store.append(
+      'platform-thread:slack:C1:T1',
+      message('m1')
+    );
 
     expect(result.ok).toBe(true);
     if (result.ok) {
@@ -407,7 +419,10 @@ describe('InMemoryConversationStore', () => {
 
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.value.metadata).toEqual({ topic: 'support', priority: 'high' });
+      expect(result.value.metadata).toEqual({
+        topic: 'support',
+        priority: 'high',
+      });
     }
   });
 });
@@ -448,7 +463,9 @@ export class InMemoryConversationStore implements ConversationStore {
     return ok(snapshot ? cloneSnapshot(snapshot) : null);
   }
 
-  async set(snapshot: ConversationSnapshot): Promise<Result<ConversationSnapshot>> {
+  async set(
+    snapshot: ConversationSnapshot
+  ): Promise<Result<ConversationSnapshot>> {
     const cloned = cloneSnapshot(snapshot);
     this.snapshots.set(snapshot.key, cloned);
     return ok(cloneSnapshot(cloned));
@@ -521,6 +538,7 @@ git commit -m "feat(core): add in-memory conversation store"
 ### Task 4: Add Conversation Class and AI SDK Export
 
 **Files:**
+
 - Create: `packages/core/src/conversation/conversation.ts`
 - Test: `packages/core/src/conversation/conversation.test.ts`
 
@@ -605,7 +623,10 @@ describe('Conversation', () => {
     const result = await conversation.history({ limit: 2 });
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.value.map((message) => message.text)).toEqual(['two', 'three']);
+      expect(result.value.map((message) => message.text)).toEqual([
+        'two',
+        'three',
+      ]);
     }
   });
 
@@ -695,17 +716,24 @@ export class Conversation {
   private readonly store: ConversationStore;
   private readonly initialMetadata: Record<string, unknown>;
 
-  constructor(options: ConversationOptions & { key: string; identityKey: string }) {
+  constructor(
+    options: ConversationOptions & { key: string; identityKey: string }
+  ) {
     this.key = options.key;
     this.identityKey = options.identityKey;
     this.store = options.store ?? defaultStore;
     this.initialMetadata = options.metadata ?? {};
   }
 
-  static fromMessage(message: UnifiedMessage, options: ConversationOptions = {}): Conversation {
+  static fromMessage(
+    message: UnifiedMessage,
+    options: ConversationOptions = {}
+  ): Conversation {
     return new Conversation({
       key: options.key ?? conversationKeyFromMessage(message),
-      identityKey: options.identityKey ?? platformUserKey(message.platform, message.userId),
+      identityKey:
+        options.identityKey ??
+        platformUserKey(message.platform, message.userId),
       store: options.store,
       metadata: options.metadata,
     });
@@ -737,7 +765,9 @@ export class Conversation {
     return this.store.append(this.key, portable);
   }
 
-  async remember(metadata: Record<string, unknown>): Promise<Result<ConversationSnapshot>> {
+  async remember(
+    metadata: Record<string, unknown>
+  ): Promise<Result<ConversationSnapshot>> {
     const existing = await this.snapshot();
     if (!existing.ok) return existing;
     return this.store.mergeMetadata(this.key, metadata);
@@ -787,6 +817,7 @@ git commit -m "feat(core): add portable conversation snapshots"
 ### Task 5: Export Conversation APIs and Add Bot Helper
 
 **Files:**
+
 - Create: `packages/core/src/conversation/index.ts`
 - Modify: `packages/core/src/client/bot.ts`
 - Modify: `packages/core/src/index.ts`
@@ -978,6 +1009,7 @@ git commit -m "feat(core): expose portable conversations"
 ### Task 6: Document the Feature and Positioning
 
 **Files:**
+
 - Modify: `docs/api/README.md`
 - Create: `docs/adr/006-portable-conversations.md`
 - Modify: `docs/adr/README.md`
@@ -987,7 +1019,7 @@ git commit -m "feat(core): expose portable conversations"
 
 Insert this section in `docs/api/README.md` after the streaming message documentation:
 
-```md
+````md
 ## Portable Conversations
 
 Portable conversations let bot code keep normalized history without depending on
@@ -1008,11 +1040,13 @@ bot.onMessage(async (ctx) => {
   // Pass messages.value to AI SDK streamText({ messages: messages.value, ... })
 });
 ```
+````
 
 By default this uses an in-memory store, which is useful for local bots and tests.
 Production bots should pass a `ConversationStore` implementation backed by their
 own database, cache, or durable object.
-```
+
+````
 
 - [ ] **Step 2: Add ADR**
 
@@ -1055,7 +1089,7 @@ Application authors can build memory, analytics, replay tests, and AI prompt
 history on top of Switchboard without rewriting platform-specific event shapes.
 Production persistence remains the application's choice. Future packages can add
 database-specific stores without changing the core API.
-```
+````
 
 - [ ] **Step 3: Add ADR index link**
 
@@ -1095,6 +1129,7 @@ git commit -m "docs: document portable conversations"
 ### Task 7: Full Verification
 
 **Files:**
+
 - No new files. This task verifies the completed slice.
 
 - [ ] **Step 1: Run all tests**

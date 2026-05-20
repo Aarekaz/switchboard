@@ -60,7 +60,9 @@ export class Conversation {
   private readonly store: ConversationStore;
   private readonly initialMetadata: Record<string, unknown>;
 
-  constructor(options: ConversationOptions & { key: string; identityKey: string }) {
+  constructor(
+    options: ConversationOptions & { key: string; identityKey: string }
+  ) {
     this.key = options.key;
     this.identityKey = options.identityKey;
     this.store = options.store ?? defaultStore;
@@ -74,7 +76,8 @@ export class Conversation {
     return new Conversation({
       key: options.key ?? conversationKeyFromMessage(message),
       identityKey:
-        options.identityKey ?? platformUserKey(message.platform, message.userId),
+        options.identityKey ??
+        platformUserKey(message.platform, message.userId),
       store: options.store,
       metadata: options.metadata,
     });
@@ -109,7 +112,10 @@ export class Conversation {
       return snapshot;
     }
 
-    return this.store.append(this.key, toPortableMessage(message, role, metadata));
+    return this.store.append(
+      this.key,
+      toPortableMessage(message, role, metadata)
+    );
   }
 
   async remember(
