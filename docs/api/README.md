@@ -14,6 +14,7 @@ Subpath exports for adapters:
 - `@aarekaz/switchboard` - Core types, client, and interfaces
 - `@aarekaz/switchboard/discord` - Discord adapter
 - `@aarekaz/switchboard/slack` - Slack adapter
+- `@aarekaz/switchboard/telegram` - Telegram adapter
 
 ---
 
@@ -33,7 +34,7 @@ function createBot<P extends PlatformType>(
 
 **Parameters:**
 - `config`: Bot configuration object
-  - `platform`: Platform name ('discord' | 'slack')
+  - `platform`: Platform name (`'discord' | 'slack' | 'telegram'`)
   - `credentials`: Platform-specific credentials
   - `adapter?`: Optional custom adapter instance
 
@@ -59,6 +60,67 @@ const bot = createBot({
 The main bot client interface.
 
 #### Methods
+
+##### Portable Conversations: conversationFor()
+
+```typescript
+conversationFor(
+  message: UnifiedMessage,
+  options?: ConversationOptions
+): Conversation
+```
+
+Create a portable conversation helper for a normalized message. The helper derives a stable conversation key from the platform, channel, and thread/message IDs, then stores normalized history in a `ConversationStore`.
+
+By default, conversations use the core in-memory store. That is useful for local bots, tests, and short-lived examples. Production bots should pass a durable `ConversationStore` implementation backed by their own database, cache, or runtime state service.
+
+**Parameters:**
+- `message`: Message to anchor the conversation to
+- `options?`: Optional conversation key, identity key, store, or metadata
+
+**Returns:** `Conversation`
+
+**Example:**
+```typescript
+bot.onMessage(async (ctx) => {
+  const conversation = bot.conversationFor(ctx.message);
+
+  const appendResult = await conversation.append(ctx.message);
+  if (!appendResult.ok) {
+    console.error('Failed to save message:', appendResult.error.message);
+    return;
+  }
+
+  const messagesResult = await conversation.toAISDKMessages({ limit: 20 });
+  if (!messagesResult.ok) {
+    console.error('Failed to load history:', messagesResult.error.message);
+    return;
+  }
+
+  // Pass messagesResult.value to your AI SDK call.
+});
+```
+
+For durable history, pass a store explicitly:
+
+```typescript
+import type { ConversationStore } from '@aarekaz/switchboard';
+
+declare const store: ConversationStore;
+
+bot.onMessage(async (ctx) => {
+  const conversation = bot.conversationFor(ctx.message, { store });
+  await conversation.append(ctx.message);
+});
+```
+
+**Related APIs:**
+- `Conversation.append(message, role?, metadata?)`
+- `Conversation.toAISDKMessages({ limit?, since? })`
+- `InMemoryConversationStore`
+- `ConversationStore`
+
+---
 
 ##### start()
 
@@ -96,21 +158,21 @@ await bot.stop();
 ##### onMessage()
 
 ```typescript
-onMessage(handler: (message: UnifiedMessage) => void | Promise<void>): void
+onMessage(handler: (ctx: MessageContext) => void | Promise<void>): () => void
 ```
 
-Register a handler for incoming messages.
+Register a handler for incoming messages. Handlers receive a `MessageContext`, which exposes the normalized message plus convenience helpers like `ctx.reply()`, `ctx.react()`, and `ctx.createThread()`.
 
 **Parameters:**
 - `handler`: Function to call when messages are received
 
 **Example:**
 ```typescript
-bot.onMessage(async (message) => {
-  console.log(`Message from ${message.userId}: ${message.text}`);
+bot.onMessage(async (ctx) => {
+  console.log(`Message from ${ctx.userId}: ${ctx.text}`);
 
-  if (message.text.includes('ping')) {
-    await bot.reply(message, 'pong!');
+  if (ctx.text.includes('ping')) {
+    await ctx.reply('pong!');
   }
 });
 ```
@@ -122,7 +184,7 @@ bot.onMessage(async (message) => {
 ```typescript
 async sendMessage(
   channelId: string,
-  text: string,
+  content: MessageContent,
   options?: SendMessageOptions
 ): Promise<Result<UnifiedMessage>>
 ```
@@ -131,7 +193,7 @@ Send a message to a channel.
 
 **Parameters:**
 - `channelId`: ID of the channel to send to
-- `text`: Message text
+- `content`: Message text or text stream
 - `options?`: Optional message options
 
 **Returns:** `Result<UnifiedMessage>` - The sent message or an error
@@ -154,7 +216,7 @@ if (result.ok) {
 ```typescript
 async reply(
   message: UnifiedMessage,
-  text: string,
+  content: MessageContent,
   options?: SendMessageOptions
 ): Promise<Result<UnifiedMessage>>
 ```
@@ -163,15 +225,15 @@ Reply to a message.
 
 **Parameters:**
 - `message`: Message to reply to
-- `text`: Reply text
+- `content`: Reply text or text stream
 - `options?`: Optional message options
 
 **Returns:** `Result<UnifiedMessage>`
 
 **Example:**
 ```typescript
-bot.onMessage(async (message) => {
-  const result = await bot.reply(message, 'Got your message!');
+bot.onMessage(async (ctx) => {
+  const result = await ctx.reply('Got your message!');
 
   if (!result.ok) {
     console.error('Failed to reply:', result.error);
@@ -291,7 +353,7 @@ Remove a reaction from a message.
 ```typescript
 async createThread(
   messageRef: MessageRef,
-  text: string
+  content: MessageContent
 ): Promise<Result<UnifiedMessage>>
 ```
 
@@ -299,15 +361,15 @@ Create a thread on a message.
 
 **Parameters:**
 - `messageRef`: Message to create thread on
-- `text`: First message in the thread
+- `content`: First message in the thread, as text or a text stream
 
 **Returns:** `Result<UnifiedMessage>` - The thread message
 
 **Example:**
 ```typescript
-bot.onMessage(async (message) => {
-  if (message.text.includes('discuss')) {
-    const result = await bot.createThread(message, 'Let\'s discuss this!');
+bot.onMessage(async (ctx) => {
+  if (ctx.text.includes('discuss')) {
+    const result = await ctx.createThread('Let\'s discuss this!');
 
     if (result.ok) {
       console.log('Thread created:', result.value.threadId);
@@ -333,10 +395,13 @@ Get list of available channels.
 ##### getUsers()
 
 ```typescript
-async getUsers(): Promise<Result<User[]>>
+async getUsers(channelId?: string): Promise<Result<User[]>>
 ```
 
-Get list of users.
+Get list of users, optionally scoped to a channel.
+
+**Parameters:**
+- `channelId?`: Optional channel ID for platforms that support channel-scoped user lookup
 
 **Returns:** `Result<User[]>`
 
@@ -502,8 +567,30 @@ interface SendMessageOptions {
   /** Thread ID to send message in */
   threadId?: string;
 
-  /** Platform-specific options (escape hatch) */
-  [platform: string]: unknown;
+  /** Options for streamed content */
+  stream?: StreamOptions;
+
+  /** Discord-specific options */
+  discord?: {
+    embeds?: unknown[];
+    components?: unknown[];
+  };
+
+  /** Slack-specific options */
+  slack?: {
+    blocks?: unknown[];
+    unfurl_links?: boolean;
+    unfurl_media?: boolean;
+  };
+
+  /** Telegram-specific options */
+  telegram?: {
+    parse_mode?: 'HTML' | 'MarkdownV2';
+    disable_web_page_preview?: boolean;
+    disable_notification?: boolean;
+    protect_content?: boolean;
+    reply_markup?: unknown;
+  };
 }
 ```
 
@@ -573,8 +660,8 @@ interface PlatformAdapter {
   /** Check if connected */
   isConnected(): boolean;
 
-  /** Register event handler */
-  on(handler: (event: UnifiedEvent) => void): void;
+  /** Subscribe to platform events */
+  onEvent(handler: (event: UnifiedEvent) => void | Promise<void>): () => void;
 
   /** Send message */
   sendMessage(channelId: string, text: string, options?: SendMessageOptions): Promise<Result<UnifiedMessage>>;
@@ -594,14 +681,20 @@ interface PlatformAdapter {
   /** Create thread */
   createThread(messageRef: MessageRef, text: string): Promise<Result<UnifiedMessage>>;
 
+  /** Upload file */
+  uploadFile(channelId: string, file: unknown, options?: UploadOptions): Promise<Result<UnifiedMessage>>;
+
   /** Get channels */
   getChannels(): Promise<Result<Channel[]>>;
 
   /** Get users */
-  getUsers(): Promise<Result<User[]>>;
+  getUsers(channelId?: string): Promise<Result<User[]>>;
 
-  /** Upload file */
-  uploadFile(channelId: string, file: UploadOptions): Promise<Result<UnifiedMessage>>;
+  /** Normalize platform-specific message to UnifiedMessage */
+  normalizeMessage(platformMessage: unknown): UnifiedMessage;
+
+  /** Normalize platform-specific event to UnifiedEvent */
+  normalizeEvent(platformEvent: unknown): UnifiedEvent | null;
 }
 ```
 
@@ -786,6 +879,58 @@ See [Slack README](../../packages/slack/README.md) for complete documentation.
 
 ---
 
+## @aarekaz/switchboard/telegram
+
+Telegram platform adapter.
+
+### Auto-Registration
+
+```typescript
+import '@aarekaz/switchboard/telegram';
+```
+
+### Credentials
+
+```typescript
+interface TelegramCredentials {
+  /** Telegram bot token from BotFather */
+  token: string;
+}
+```
+
+### Example
+
+```typescript
+import { createBot } from '@aarekaz/switchboard';
+import '@aarekaz/switchboard/telegram';
+
+const bot = createBot({
+  platform: 'telegram',
+  credentials: {
+    token: process.env.TELEGRAM_BOT_TOKEN,
+  },
+});
+
+await bot.start();
+```
+
+### Platform-Specific Features
+
+Telegram options are available through `SendMessageOptions.telegram`:
+
+```typescript
+await bot.sendMessage(chatId, 'Hello **world**', {
+  telegram: {
+    parse_mode: 'MarkdownV2',
+    disable_notification: true,
+  },
+});
+```
+
+See [Telegram README](../../packages/telegram/README.md) for complete documentation.
+
+---
+
 ## Helper Functions
 
 ### ok()
@@ -838,9 +983,9 @@ For guaranteed reliability across platforms:
 
 ```typescript
 // Recommended
-bot.onMessage(async (message) => {
-  await bot.editMessage(message, 'Updated'); // Always works
-  await bot.addReaction(message, '👍');       // Always works
+bot.onMessage(async (ctx) => {
+  await bot.editMessage(ctx.message, 'Updated'); // Always works
+  await ctx.react('👍');                         // Always works
 });
 
 // Works, but may fail on Slack if cached
@@ -853,14 +998,8 @@ await bot.editMessage(messageId, 'Updated');
 const result = await bot.sendMessage('channel', 'Hello!');
 
 if (!result.ok) {
-  if (result.error instanceof RateLimitError) {
-    // Wait and retry
-  } else if (result.error instanceof PermissionError) {
-    // Log and skip
-  } else {
-    // Unknown error
-    throw result.error;
-  }
+  console.error(result.error.message);
+  return;
 }
 ```
 
@@ -869,11 +1008,11 @@ if (!result.ok) {
 Switchboard is written in TypeScript and provides excellent type safety:
 
 ```typescript
-import { UnifiedMessage, Result } from '@aarekaz/switchboard';
+import type { MessageContext, Result } from '@aarekaz/switchboard';
 
-bot.onMessage(async (message: UnifiedMessage) => {
+bot.onMessage(async (ctx: MessageContext) => {
   // Full autocomplete and type checking
-  console.log(message.text);
+  console.log(ctx.text);
 });
 ```
 
@@ -885,4 +1024,5 @@ bot.onMessage(async (message: UnifiedMessage) => {
 - [Contributing Guide](../../CONTRIBUTING.md)
 - [Discord Adapter README](../../packages/discord/README.md)
 - [Slack Adapter README](../../packages/slack/README.md)
+- [Telegram Adapter README](../../packages/telegram/README.md)
 - [Examples](../../examples/)
