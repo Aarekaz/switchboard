@@ -16,7 +16,8 @@ Switchboard normalizes the differences between chat platforms behind one Bot API
 - **One API, three platforms.** Discord, Slack, and Telegram share the same `Bot` interface — no per-platform branching in your code.
 - **One-line platform swap.** `platform: 'discord'` → `platform: 'slack'` is the entire diff.
 - **AI streaming built in.** Pass an `AsyncIterable<string>` (e.g. AI SDK's `result.textStream`) to `bot.reply()` and Switchboard posts a placeholder, then edits the message in place as tokens arrive.
-- **`Result<T>` error handling.** Every operation returns `{ ok, value | error }` — no thrown exceptions, no surprise crashes.
+- **Portable conversations.** Use `bot.conversationFor(message)` to keep normalized chat history and export it to AI SDK-compatible messages.
+- **`Result<T>` operation handling.** Message, reaction, thread, upload, and lookup calls return `{ ok, value | error }` so routine platform failures stay explicit.
 - **Tree-shakeable.** Only the adapter you import lands in your bundle. Subpath exports keep `discord.js`, `@slack/bolt`, and `grammy` independent.
 - **Strict TypeScript.** `strict: true`, `noUncheckedIndexedAccess`, autocomplete-driven DX.
 
@@ -97,7 +98,7 @@ await ctx.reply(textStream, {
 | **Cross-platform API** | ✅ Discord, Slack, Telegram | ❌ Single platform each | ✅ Slack, Teams, Discord, Telegram, +5 more |
 | **One-line platform swap** | ✅ | ❌ | ⚠️ Adapter swap |
 | **AI streaming into messages** | ✅ Built in | ❌ DIY | ✅ Built in |
-| **Error model** | `Result<T>` (no throws) | Throws | Throws |
+| **Error model** | `Result<T>` for routine operations | Throws | Throws |
 | **State backend required** | ❌ Zero infra | ❌ | ⚠️ Redis/Postgres recommended |
 | **Bundle footprint** | Lean — adapter-scoped | Lean | Heavier (cards, modals, state) |
 | **JSX cards / modals / slash commands** | ❌ Not yet | Platform-specific | ✅ |

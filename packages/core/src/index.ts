@@ -37,6 +37,9 @@ export type {
   ChannelType,
   // Users
   User,
+  // Context
+  MessageContext,
+  MessageHandler,
 } from './types/index.js';
 
 // Result utilities
@@ -64,3 +67,24 @@ export {
 // Streaming helpers
 export { toAsyncIterable } from './utils/index.js';
 export type { TextStream } from './utils/index.js';
+
+// Portable conversations
+export {
+  Conversation,
+  InMemoryConversationStore,
+  conversationKeyFromMessage,
+  platformThreadKey,
+  platformUserKey,
+  portableMessageId,
+} from './conversation/index.js';
+export type {
+  AISDKPromptMessage,
+  ConversationHistoryOptions,
+  ConversationOptions,
+  ConversationRole,
+  ConversationSnapshot,
+  ConversationStore,
+  PlatformIdentityLink,
+  PortableConversationMessage,
+  PortableIdentity,
+} from './conversation/index.js';

@@ -17,6 +17,7 @@ Each ADR follows this structure:
 - [ADR-003: Auto-Registration Pattern](./003-auto-registration-pattern.md) - Side-effect imports for adapters
 - [ADR-004: Result Type for Error Handling](./004-result-type-pattern.md) - Explicit error handling
 - [ADR-005: Emoji Mapping Strategy](./005-emoji-mapping-strategy.md) - Cross-platform emoji support
+- [ADR-006: Portable Conversations](./006-portable-conversations.md) - Cross-platform conversation history
 
 ## Creating New ADRs
 

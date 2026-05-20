@@ -1,4 +1,6 @@
 import type { PlatformAdapter } from '../adapter/interface.js';
+import { Conversation } from '../conversation/index.js';
+import type { ConversationOptions } from '../conversation/index.js';
 import type { Result } from '../types/result.js';
 import type { PlatformType } from '../types/platform.js';
 import type {
@@ -43,6 +45,20 @@ export class Bot {
    */
   get platform(): PlatformType {
     return this._platform;
+  }
+
+  /**
+   * Create a portable conversation helper for a normalized message.
+   *
+   * This does not require platform adapters to support new behavior. It derives
+   * a stable conversation key from platform/channel/thread identifiers and uses
+   * the provided store, or the core in-memory store when omitted.
+   */
+  conversationFor(
+    message: UnifiedMessage,
+    options: ConversationOptions = {}
+  ): Conversation {
+    return Conversation.fromMessage(message, options);
   }
 
   /**
